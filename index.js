@@ -1,3 +1,42 @@
+// Procedural main process begins here
+console.clear();
+
+// Set global variables
+global.UTILITIES_PATH = require('path').resolve(__dirname, 'common', 'utilities.js');
+
+const yearIndex = process.argv.indexOf('-year');
+const dayIndex = process.argv.indexOf('-day');
+
+if (yearIndex === -1 || dayIndex === -1) {
+    const readline = require('readline').createInterface({input: process.stdin, output: process.stdout});
+    readline.question('What year? ', (year) => {
+        readline.question("What day? (answer 'all' for all days in this year) ", (day) => {
+            readline.close();
+            year = parseInt(year);
+            day = day === 'all' ? -1 : parseInt(day);
+
+            if (!year || isNaN(year) || !day || isNaN(day)) {
+                console.error('year & day arguements must be valid');
+                process.exit();
+            }
+            execute(year, day);
+        });
+    });
+} else {
+    const year = parseInt(process.argv[yearIndex + 1]);
+    const dayArg = process.argv[dayIndex + 1];
+    const day = dayArg === 'all' ? -1 : parseInt(process.argv[dayIndex + 1]);
+    if (!year || isNaN(year) || !day || isNaN(day)) {
+        console.error('year & day arguements must be valid');
+        process.exit();
+    }
+    execute(year, day);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 function execute(year, day) {
     const path = require('path');
     const zeroPad = (num, places) => String(num).padStart(places, '0')
@@ -35,35 +74,3 @@ function execute(year, day) {
         }
     }
 }
-
-console.clear();
-
-const yearIndex = process.argv.indexOf('-year');
-const dayIndex = process.argv.indexOf('-day');
-
-if (yearIndex === -1 || dayIndex === -1) {
-    const readline = require('readline').createInterface({input: process.stdin, output: process.stdout});
-    readline.question('What year? ', (year) => {
-        readline.question("What day? (answer 'all' for all days in this year) ", (day) => {
-            readline.close();
-            year = parseInt(year);
-            day = day === 'all' ? -1 : parseInt(day);
-
-            if (!year || isNaN(year) || !day || isNaN(day)) {
-                console.error('year & day arguements must be valid');
-                process.exit();
-            }
-            execute(year, day);
-        });
-    });
-} else {
-    const year = parseInt(process.argv[yearIndex + 1]);
-    const dayArg = process.argv[dayIndex + 1];
-    const day = dayArg === 'all' ? -1 : parseInt(process.argv[dayIndex + 1]);
-    if (!year || isNaN(year) || !day || isNaN(day)) {
-        console.error('year & day arguements must be valid');
-        process.exit();
-    }
-    execute(year, day);
-}
-
