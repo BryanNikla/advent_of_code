@@ -1,3 +1,3 @@
-module.exports.solution = function() {
-    return ['', ''];
-}
+module.exports.solution = function () {
+    return ["", ""];
+};

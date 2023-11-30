@@ -6,4 +6,4 @@ module.exports = {
     two: (input) => {
         return;
     },
-}
+};
