@@ -18,22 +18,20 @@ function execute(year, day) {
         try {
             const {solution, test} = require(filePath);
             const [answer_1, answer_2] = solution();
-            const [test_1, test_2] = typeof test === 'function' ? test() : [null, null];
-            return {
-                'Part 1': answer_1 ?? '', 
-                'Part 2': answer_2 ?? '',
-                'Test 1': test_1,
-                'Test 2': test_2,
-            };
+            const rsp = {'Solution 1': answer_1 ?? '', 'Solution 2': answer_2 ?? ''};
+            if (typeof test === 'function') {
+                const [test_1, test_2] = test();
+                Object.assign(rsp, {'Test 1': test_1, 'Test 2': test_2});
+            }
+            return rsp;
         } catch (err) {
             switch (true) {
                 case String(err).includes(filePath):
-                    console.error('Cannot find this problem');
-                    break;
+                    return {};
                 default:
                     console.error(err);
+                    process.exit();
             }
-            process.exit();
         }
     }
 }
