@@ -16,9 +16,15 @@ function execute(year, day) {
     function _solve(year, day) {
         const filePath = path.resolve(__dirname, String(year), zeroPad(day, 2), 'solution.js');
         try {
-            const {solution} = require(filePath);
+            const {solution, test} = require(filePath);
             const [answer_1, answer_2] = solution();
-            return {'Part 1': answer_1 ?? '', 'Part 2': answer_2 ?? ''};
+            const [test_1, test_2] = typeof test === 'function' ? test() : [null, null];
+            return {
+                'Part 1': answer_1 ?? '', 
+                'Part 2': answer_2 ?? '',
+                'Test 1': test_1,
+                'Test 2': test_2,
+            };
         } catch (err) {
             switch (true) {
                 case String(err).includes(filePath):
@@ -27,7 +33,7 @@ function execute(year, day) {
                 default:
                     console.error(err);
             }
-            return {'Part 1': '', 'Part 2': ''};
+            process.exit();
         }
     }
 }
@@ -47,7 +53,7 @@ if (yearIndex === -1 || dayIndex === -1) {
 
             if (!year || isNaN(year) || !day || isNaN(day)) {
                 console.error('year & day arguements must be valid');
-                return;
+                process.exit();
             }
             execute(year, day);
         });
@@ -58,7 +64,7 @@ if (yearIndex === -1 || dayIndex === -1) {
     const day = dayArg === 'all' ? -1 : parseInt(process.argv[dayIndex + 1]);
     if (!year || isNaN(year) || !day || isNaN(day)) {
         console.error('year & day arguements must be valid');
-        return;
+        process.exit();
     }
     execute(year, day);
 }
