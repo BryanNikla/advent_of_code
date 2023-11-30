@@ -1,8 +1,9 @@
-module.exports.solution = function() {
-
-    const fs = require('fs');
-    const path = require('path');
-    const input = fs.readFileSync(path.resolve(__dirname, 'input.txt'), 'utf8');
-
-    return ['', ''];
+module.exports = {
+    solutions: [null, null],
+    one: (input) => {
+        return;
+    },
+    two: (input) => {
+        return;
+    },
 }

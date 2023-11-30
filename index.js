@@ -1,8 +1,13 @@
-// Procedural main process begins here
+const path = require('path');
+const fs = require('fs');
+
 console.clear();
 
 // Set global variables
+global.ROOT_PATH = require('path').resolve(__dirname);
 global.UTILITIES_PATH = require('path').resolve(__dirname, 'common', 'utilities.js');
+
+const {zeroPad} = require(global.UTILITIES_PATH);
 
 const yearIndex = process.argv.indexOf('-year');
 const dayIndex = process.argv.indexOf('-day');
@@ -10,10 +15,10 @@ const dayIndex = process.argv.indexOf('-day');
 if (yearIndex === -1 || dayIndex === -1) {
     const readline = require('readline').createInterface({input: process.stdin, output: process.stdout});
     readline.question('What year? ', (year) => {
-        readline.question("What day? (answer 'all' for all days in this year) ", (day) => {
+        readline.question("What day?", (day) => {
             readline.close();
-            year = parseInt(year);
-            day = day === 'all' ? -1 : parseInt(day);
+            year = parseInt(year) || new Date().getFullYear();
+            day = (day === 'all' || day === '') ? -1 : parseInt(day);
 
             if (!year || isNaN(year) || !day || isNaN(day)) {
                 console.error('year & day arguements must be valid');
@@ -38,9 +43,6 @@ if (yearIndex === -1 || dayIndex === -1) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function execute(year, day) {
-    const path = require('path');
-    const zeroPad = (num, places) => String(num).padStart(places, '0')
-
     const output = {};
     if (day === -1) {
         for (let i = 1; i < 26; i++) {
@@ -49,28 +51,61 @@ function execute(year, day) {
     } else {
         output[parseFloat(year + '.' + zeroPad(day, 2)).toFixed(2)] = _solve(year, day);
     }
-
     console.table(output);
 
     function _solve(year, day) {
-        const filePath = path.resolve(__dirname, String(year), zeroPad(day, 2), 'solution.js');
-        try {
-            const {solution, test} = require(filePath);
-            const [answer_1, answer_2] = solution();
-            const rsp = {'Solution 1': answer_1 ?? '', 'Solution 2': answer_2 ?? ''};
-            if (typeof test === 'function') {
-                const [test_1, test_2] = test();
-                Object.assign(rsp, {'Test 1': test_1, 'Test 2': test_2});
-            }
-            return rsp;
-        } catch (err) {
-            switch (true) {
-                case String(err).includes(filePath):
-                    return {};
-                default:
-                    console.error(err);
-                    process.exit();
+
+        function _getFile(path) {
+            return fs.readFileSync(path, 'utf8');
+        }
+
+        function _handleError(path) {
+            return (err) => {
+                if (String(err).includes(path)) {
+                    return rsp;
+                }
+                console.error(err);
+                process.exit();
             }
         }
+
+        const solution_path = path.resolve(__dirname, String(year), zeroPad(day, 2), 'solution.js');
+        const input_path = path.resolve(__dirname, String(year), zeroPad(day, 2), 'input.txt');
+        const test_path = path.resolve(__dirname, String(year), zeroPad(day, 2), 'test.txt');
+
+        const rsp = {};
+
+        try {
+            let {one, two, solutions} = require(solution_path);
+
+            try {
+                Object.assign(rsp, {'Solution 1': one(_getFile(input_path))});
+            } catch (err) {
+                return _handleError(input_path)(err);
+            }
+    
+            try {
+                Object.assign(rsp, {'Solution 2': two(_getFile(input_path))});
+            } catch (err) {
+                return _handleError(input_path)(err);
+            }
+    
+            try {
+                Object.assign(rsp, {'Test 1': one(_getFile(test_path)) === solutions[0] ? '✅' : '❌'});
+            } catch (err) {
+                return _handleError(test_path)(err);
+            }
+    
+            try {
+                Object.assign(rsp, {'Test 2': two(_getFile(test_path)) === solutions[1] ? '✅' : '❌'});
+            } catch (err) {
+                return _handleError(test_path)(err);
+            }
+
+        } catch (err) {
+            return _handleError(solution_path)(err);
+        }
+
+        return rsp;
     }
 }
