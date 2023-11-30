@@ -7,15 +7,17 @@ console.clear();
 global.ROOT_PATH = require('path').resolve(__dirname);
 global.UTILITIES_PATH = require('path').resolve(__dirname, 'common', 'utilities.js');
 
-const {zeroPad} = require(global.UTILITIES_PATH);
+const {zeroPad, colorText} = require(global.UTILITIES_PATH);
+
+printGreeting();
 
 const yearIndex = process.argv.indexOf('-year');
 const dayIndex = process.argv.indexOf('-day');
 
 if (yearIndex === -1 || dayIndex === -1) {
     const readline = require('readline').createInterface({input: process.stdin, output: process.stdout});
-    readline.question('What year? ', (year) => {
-        readline.question("What day?", (day) => {
+    readline.question(colorText('red', 'What Year? '), (year) => {
+        readline.question(colorText('green', 'What Day? '), (day) => {
             readline.close();
             year = parseInt(year) || new Date().getFullYear();
             day = (day === 'all' || day === '') ? -1 : parseInt(day);
@@ -42,7 +44,18 @@ if (yearIndex === -1 || dayIndex === -1) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+function  printGreeting() {
+    console.log('\n');
+    console.log(colorText('green', '🎄  Advent of Code  🎅'));
+    console.log('-'.repeat(process.stdout.columns));
+    console.log(colorText('cyan', 'https://adventofcode.com/'));
+    console.log(colorText('cyan', 'Code By: Bryan Nika'));
+    console.log('\n');
+}
+
+
 function execute(year, day) {
+    //////////////////////////////////////////////////////////////////////////////////////
     const output = {};
     if (day === -1) {
         for (let i = 1; i < 26; i++) {
@@ -51,7 +64,11 @@ function execute(year, day) {
     } else {
         output[parseFloat(year + '.' + zeroPad(day, 2)).toFixed(2)] = _solve(year, day);
     }
+
+    // Final output
+    console.log('\n');
     console.table(output);
+    //////////////////////////////////////////////////////////////////////////////////////
 
     function _solve(year, day) {
 
