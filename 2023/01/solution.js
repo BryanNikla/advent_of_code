@@ -13,7 +13,6 @@ module.exports = {
     },
     two: (input) => {
         const lines = input.split("\n").filter((line) => line.length);
-        // const values = lines.map((line) => line.match(/one|two|three|four|five|six|seven|eight|nine|\d/g));
         const values = lines.map((line) => {
             const pattern = /one|two|three|four|five|six|seven|eight|nine|\d/g;
             let matches = [];
