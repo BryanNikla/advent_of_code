@@ -157,6 +157,7 @@ function generateDay(year, day) {
     const inputPath = path.resolve(__dirname, String(year), zeroPad(day, 2), "input.txt");
     const test1Path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test1.txt");
     const test2Path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test2.txt");
+    const readmePath = path.resolve(__dirname, String(year), zeroPad(day, 2), "README.md");
 
     if (!fs.existsSync(solutionPath)) {
         fs.writeFileSync(
@@ -184,5 +185,9 @@ function generateDay(year, day) {
 
     if (!fs.existsSync(test2Path)) {
         fs.writeFileSync(test2Path, "");
+    }
+
+    if (!fs.existsSync(readmePath)) {
+        fs.writeFileSync(readmePath, "");
     }
 }
