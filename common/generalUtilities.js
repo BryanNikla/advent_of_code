@@ -17,7 +17,7 @@ function arraySum(arr = []) {
 
 /**
  * Prep to color the console output text
- * @param {string} color
+ * @param {'black'|'red'|'green'|'yellow'|'blue'|'magenta'|'cyan'|'white'}} color
  * @param {string} text
  */
 function colorText(color, text = "") {

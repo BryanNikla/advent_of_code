@@ -8,8 +8,10 @@ global.ROOT_PATH = require("path").resolve(__dirname);
 global.UTILITIES_PATH = require("path").resolve(__dirname, "common", "utilities.js");
 global.ARRAY_FILTERS_PATH = require("path").resolve(__dirname, "common", "arrayFilters.js");
 global.MATRIX_UTILITIES_PATH = require("path").resolve(__dirname, "common", "matrixUtilities.js");
+global.GENERAL_UTILITIES_PATH = require("path").resolve(__dirname, "common", "generalUtilities.js");
 
-const {zeroPad, colorText} = require(global.UTILITIES_PATH);
+const {zeroPad, isBetween} = require(global.UTILITIES_PATH);
+const {colorText} = require(global.GENERAL_UTILITIES_PATH);
 
 printGreeting();
 
@@ -40,6 +42,12 @@ if (yearIndex === -1 || dayIndex === -1) {
         console.error("year & day arguements must be valid");
         process.exit();
     }
+
+    if (isBetween(dayArg, 1, 25) && process.argv.includes("-generate")) {
+        generateDay(year, day);
+        process.exit();
+    }
+
     execute(year, day);
 }
 
@@ -127,5 +135,54 @@ function execute(year, day) {
         }
 
         return rsp;
+    }
+}
+
+// Generate the day workspace
+function generateDay(year, day) {
+    console.log(colorText("yellow", `Generating day ${day} for year ${year}`));
+
+    const yearPath = path.resolve(__dirname, String(year));
+    const dayPath = path.resolve(__dirname, String(year), zeroPad(day, 2));
+
+    if (!fs.existsSync(yearPath)) {
+        fs.mkdirSync(yearPath);
+    }
+
+    if (!fs.existsSync(dayPath)) {
+        fs.mkdirSync(dayPath);
+    }
+
+    const solutionPath = path.resolve(__dirname, String(year), zeroPad(day, 2), "solution.js");
+    const inputPath = path.resolve(__dirname, String(year), zeroPad(day, 2), "input.txt");
+    const test1Path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test1.txt");
+    const test2Path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test2.txt");
+
+    if (!fs.existsSync(solutionPath)) {
+        fs.writeFileSync(
+            solutionPath,
+            `// ${year}/${zeroPad(day, 2)}\n` +
+                `module.exports = {one, two, solutions: [0, 0]};\n` +
+                `\n` +
+                `function one(input) {\n` +
+                `    return 0;\n` +
+                `}\n` +
+                `\n` +
+                `function two(input) {\n` +
+                `    return 0;\n` +
+                `}\n`
+        );
+    }
+
+    if (!fs.existsSync(inputPath)) {
+        fs.writeFileSync(inputPath, "");
+    }
+
+    if (!fs.existsSync(test1Path)) {
+        fs.writeFileSync(test1Path, "");
+    }
+
+    if (!fs.existsSync(test2Path)) {
+        fs.writeFileSync(test2Path, "");
     }
 }

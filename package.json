@@ -1,0 +1,26 @@
+{
+  "name": "advent_of_code",
+  "version": "1.0.0",
+  "description": "Personal workspace for solving puzzles during the yearly Advent of Code",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BryanNikla/advent_of_code.git"
+  },
+  "keywords": [
+    "Advent",
+    "of",
+    "Code",
+    "Javascript",
+    "AOC"
+  ],
+  "author": "Bryan Nikla",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BryanNikla/advent_of_code/issues"
+  },
+  "homepage": "https://github.com/BryanNikla/advent_of_code#readme"
+}
