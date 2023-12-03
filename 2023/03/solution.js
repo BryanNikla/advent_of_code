@@ -1,7 +1,9 @@
-const {eachMatrix, eachSurrounding, isLastColOfMatrix, arraySum} = require(global.UTILITIES_PATH);
+const {arraySum, eachMatrix, isLastColOfMatrix, eachSurrounding} = require(global.UTILITIES_PATH);
+// const {eachMatrix, isLastColOfMatrix, eachSurrounding} = require(global.MATRIX_UTILITIES_PATH);
 
 const isDigit = (char) => /[0-9]/.test(char);
 const isSymbol = (char) => char !== "." && !isDigit(char);
+const isGearSymbol = (char) => char === "*";
 
 module.exports = {
     solutions: [4361, 467835],
@@ -39,8 +41,6 @@ module.exports = {
     two: (input) => {
         const input_lines = input.split("\n");
         const matrix = input_lines.map((line) => line.split(""));
-
-        const isGearSymbol = (char) => char === "*";
 
         let currentNumberIsPart = false;
         let currentNumber = "";

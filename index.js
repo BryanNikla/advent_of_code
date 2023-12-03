@@ -6,6 +6,8 @@ console.clear();
 // Set global variables
 global.ROOT_PATH = require("path").resolve(__dirname);
 global.UTILITIES_PATH = require("path").resolve(__dirname, "common", "utilities.js");
+global.ARRAY_FILTERS_PATH = require("path").resolve(__dirname, "common", "arrayFilters.js");
+global.MATRIX_UTILITIES_PATH = require("path").resolve(__dirname, "common", "matrixUtilities.js");
 
 const {zeroPad, colorText} = require(global.UTILITIES_PATH);
 
