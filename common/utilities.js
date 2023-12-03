@@ -61,6 +61,10 @@ function eachMatrix(matrix, fn) {
     }
 }
 
+function isLastColOfMatrix(matrix, [col, row]) {
+    return col === matrix[row].length - 1;
+}
+
 /**
  * callAtCords for every cordinate surrounding a set of cords.
  * @param {Array.<Array.<string>>} matrix
@@ -109,6 +113,7 @@ module.exports = {
     eachSurrounding,
     hasProp,
     distinctValues,
+    isLastColOfMatrix,
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
