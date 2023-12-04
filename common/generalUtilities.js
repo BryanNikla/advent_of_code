@@ -57,9 +57,28 @@ function reverseString(str) {
     return str.split("").reverse().join("");
 }
 
-function arrOfLength(length) {
+/**
+ * @description  Create an array of a certain length whose values are the index of the array
+ * @param {Number} length
+ */
+function arrOfLength(length = 0) {
     length = parseInt(length);
     return length > 0 ? Array.from({length}, (_, i) => i) : [];
+}
+
+/**
+ * @description Run a function x times
+ * @param {Number} x - How many times to run the function
+ * @param {function} fn - Single parameter, the iteration number (1-based)
+ */
+function forX(x = 0, fn) {
+    if (typeof x !== "number") {
+        throw new Error("forX: x must be a number");
+    }
+    if (typeof fn !== "function") {
+        throw new Error("forX: fn must be a function");
+    }
+    arrOfLength(x).forEach((_, i) => fn(i + 1));
 }
 
 ///////////////////////////////
@@ -72,4 +91,5 @@ module.exports = {
     isBetween,
     reverseString,
     arrOfLength,
+    forX,
 };
