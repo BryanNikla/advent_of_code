@@ -33,6 +33,10 @@ function one(input) {
 function two(input) {
     const cards = parseInputIntoCardValues(input.split("\n"));
     const count = cards.map(() => 1);
-    cards.forEach(([w, n], i) => forX(wins(w, n), (x) => (count[i + x] += count[i])));
+    cards.forEach(([w, n], i) => {
+        forX(wins(w, n), (x) => {
+            count[i + x] += count[i];
+        });
+    });
     return arraySum(count);
 }
