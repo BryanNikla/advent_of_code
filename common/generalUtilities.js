@@ -57,6 +57,11 @@ function reverseString(str) {
     return str.split("").reverse().join("");
 }
 
+function arrOfLength(length) {
+    length = parseInt(length);
+    return length > 0 ? Array.from({length}, (_, i) => i) : [];
+}
+
 ///////////////////////////////
 ///////////////////////////////
 module.exports = {
@@ -66,4 +71,5 @@ module.exports = {
     hasProp,
     isBetween,
     reverseString,
+    arrOfLength,
 };

@@ -1,7 +1,7 @@
 // 2023/04
 module.exports = {one, two, solutions: [13, 30]};
 
-const {arraySum} = require(global.UTILITIES_PATH);
+const {arraySum, arrOfLength} = require(global.UTILITIES_PATH);
 
 function parseInputIntoCardValues(inputLines) {
     const _getNumbers = (str) => {
@@ -33,19 +33,32 @@ function one(input) {
 
 function two(input) {
     const cards = parseInputIntoCardValues(input.split("\n"));
-    const pilesByIndex = cards.map(([winners, numbers]) => [[winners, numbers]]);
-    const cardsInPilesAtEnd = pilesByIndex.map((pile, i) => {
-        const cardsInPile = pile.length;
-        // TODO: Redo this solve later to be more performant.. this is TERRIBLY slow to process (but works)
-        while (pile.length) {
-            const [winners, numbers] = pile.pop();
-            for (let w = numberOfWinningNumbers(winners, numbers); w > 0; w--) {
-                if (pilesByIndex[i + w]) {
-                    pilesByIndex[i + w].push(structuredClone(pilesByIndex[i + w][0]));
-                }
+    const pileCount = cards.map(() => 1);
+    cards.forEach(([winners, numbers], i) => {
+        arrOfLength(numberOfWinningNumbers(winners, numbers)).forEach((x) => {
+            if (pileCount[i + x + 1]) {
+                pileCount[i + x + 1] += pileCount[i];
             }
-        }
-        return cardsInPile;
+        });
     });
-    return arraySum(cardsInPilesAtEnd);
+    return arraySum(pileCount);
+
+    // OLD SOLVE (slow, needed to be refactored)
+    // Keeping it just for reference
+    //
+    // const pilesByIndex = cards.map(([winners, numbers]) => [[winners, numbers]]);
+    // return arraySum(
+    //     pilesByIndex.map((pile, i) => {
+    //         const cardsInPile = pile.length;
+    //         while (pile.length) {
+    //             const [winners, numbers] = pile.pop();
+    //             for (let w = numberOfWinningNumbers(winners, numbers); w > 0; w--) {
+    //                 if (pilesByIndex[i + w]) {
+    //                     pilesByIndex[i + w].push(structuredClone(pilesByIndex[i + w][0]));
+    //                 }
+    //             }
+    //         }
+    //         return cardsInPile;
+    //     })
+    // );
 }
