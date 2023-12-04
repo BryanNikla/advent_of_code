@@ -35,23 +35,4 @@ function two(input) {
     const count = cards.map(() => 1);
     cards.forEach(([w, n], i) => forX(wins(w, n), (x) => (count[i + x] += count[i])));
     return arraySum(count);
-
-    // OLD SOLVE (slow, needed to be refactored)
-    // Keeping it just for reference
-    //
-    // const pilesByIndex = cards.map(([winners, numbers]) => [[winners, numbers]]);
-    // return arraySum(
-    //     pilesByIndex.map((pile, i) => {
-    //         const cardsInPile = pile.length;
-    //         while (pile.length) {
-    //             const [winners, numbers] = pile.pop();
-    //             for (let w = wins(winners, numbers); w > 0; w--) {
-    //                 if (pilesByIndex[i + w]) {
-    //                     pilesByIndex[i + w].push(structuredClone(pilesByIndex[i + w][0]));
-    //                 }
-    //             }
-    //         }
-    //         return cardsInPile;
-    //     })
-    // );
 }
