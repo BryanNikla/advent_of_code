@@ -2,8 +2,8 @@ module.exports = {one, two, solutions: [35, 46]};
 
 const {forX} = require(global.UTILITIES_PATH);
 
-function isInRange(value, min, max) {
-    return value >= min && value <= max;
+function isInRange(n, min, max) {
+    return n >= min && n <= max;
 }
 
 function isEven(value) {
@@ -31,47 +31,40 @@ function parseInput(input) {
     };
 }
 
-function findValueInMapping(value, mapping) {
-    const map = mapping.find(({dest, source, length}) => isInRange(value, source, source + length));
-    if (map) {
-        const d = value - map.source;
-        return map.dest + d;
-    }
-    return value; // no mapping found, return original value
+function findValueInMaps(value, maps) {
+    const map = maps.find(({source, length}) => {
+        return isInRange(value, source, source + length - 1);
+    });
+    return map ? map.dest + (value - map.source) : value;
 }
 
 function one(input) {
     const {seeds, ...maps} = parseInput(input);
-    return Math.min(...seeds.map((seed) => Object.values(maps).reduce((acc, map) => findValueInMapping(acc, map), seed)));
+    return Math.min(...seeds.map((seed) => Object.values(maps).reduce((acc, map) => findValueInMaps(acc, map), seed)));
 }
 
-function two() {}
-// function two(input) {
-//     const {seeds, ...maps} = parseInput(input);
+function two(input) {
+    const {seeds: seedData, ...maps} = parseInput(input);
 
-//     console.time("RunTime");
+    const ranges = [];
+    while (seedData.length > 0) {
+        ranges.push([seedData.shift(), seedData.shift()]);
+    }
 
-//     let lowest = null;
-//     let rangeStart = 0;
-//     seeds.forEach((val, i) => {
-//         if (!isEven(i)) {
-//             forX(
-//                 val,
-//                 (x) => {
-//                     const low = Math.min(Object.values(maps).reduce((acc, map) => findValueInMapping(acc, map), x));
-//                     if (low < lowest || lowest == null) {
-//                         console.log("new lowest:", low);
-//                         lowest = low;
-//                     }
-//                 },
-//                 rangeStart
-//             );
-//         } else {
-//             rangeStart = val;
-//         }
-//     });
+    let lowest = null;
+    ranges.forEach(([start, length]) => {
+        forX(
+            length,
+            (seed) => {
+                const location = Object.values(maps).reduce((acc, map) => findValueInMaps(acc, map), seed);
+                if (location < lowest || lowest == null) {
+                    console.log("new lowest location:", location);
+                    lowest = location;
+                }
+            },
+            start
+        );
+    });
 
-//     console.log();
-//     console.timeEnd("RunTime");
-//     return lowest;
-// }
+    return lowest;
+}
