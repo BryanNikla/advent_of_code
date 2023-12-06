@@ -70,15 +70,18 @@ function arrOfLength(length = 0) {
  * @description Run a function x times
  * @param {Number} x - How many times to run the function
  * @param {function} fn - Single parameter, the iteration number (1-based)
+ * @param {Number} startAt - What number to start the iteration at (default 1)
  */
-function forX(x = 0, fn) {
+function forX(x = 0, fn, startAt = 1) {
     if (typeof x !== "number") {
         throw new Error("forX: x must be a number");
     }
     if (typeof fn !== "function") {
         throw new Error("forX: fn must be a function");
     }
-    arrOfLength(x).forEach((_, i) => fn(i + 1));
+    for (let i = Number(startAt); i < x + startAt; i++) {
+        fn(i);
+    }
 }
 
 ///////////////////////////////
