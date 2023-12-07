@@ -88,6 +88,13 @@ function multiplyArray(arr = []) {
     arr.reduce((acc, val) => acc * val, 1);
 }
 
+function arrayFrequencies(arr = []) {
+    return arr.reduce((acc, cur, i) => {
+        acc[cur] = (acc[cur] || 0) + 1;
+        return acc;
+    }, {});
+}
+
 /**
  * @description Run a function x times
  * @param {Number} x - How many times to run the function
@@ -106,6 +113,18 @@ function forX(x = 0, fn, startAt = 1) {
     }
 }
 
+function equalArrays(arr1, arr2) {
+    return arr1.every((value, index) => {
+        return value === arr2[index];
+    });
+}
+
+function maxObjectKey(obj) {
+    return Object.keys(obj).reduce((prevKey, currKey) => {
+        return obj[prevKey] < obj[currKey] ? currKey : prevKey;
+    });
+}
+
 ///////////////////////////////
 ///////////////////////////////
 module.exports = {
@@ -120,4 +139,7 @@ module.exports = {
     multiplyArray,
     sortASC,
     sortDESC,
+    arrayFrequencies,
+    equalArrays,
+    maxObjectKey,
 };
