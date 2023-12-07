@@ -107,26 +107,26 @@ function execute(year, day) {
 
             if (!process.argv.includes("-test")) {
                 try {
-                    Object.assign(rsp, {"Solution 1": one(_getFile(input_path))});
+                    Object.assign(rsp, {"Solution 1": one(_getFile(input_path), {isTest: false})});
                 } catch (err) {
                     return _handleError(input_path)(err);
                 }
 
                 try {
-                    Object.assign(rsp, {"Solution 2": two(_getFile(input_path))});
+                    Object.assign(rsp, {"Solution 2": two(_getFile(input_path), {isTest: false})});
                 } catch (err) {
                     return _handleError(input_path)(err);
                 }
             }
 
             try {
-                Object.assign(rsp, {"Test 1": one(_getFile(test1_path)) === solutions[0] ? "✅" : "❌"});
+                Object.assign(rsp, {"Test 1": one(_getFile(test1_path), {isTest: true}) === solutions[0] ? "✅" : "❌"});
             } catch (err) {
                 return _handleError(test1_path)(err);
             }
 
             try {
-                Object.assign(rsp, {"Test 2": two(_getFile(test2_path)) === solutions[1] ? "✅" : "❌"});
+                Object.assign(rsp, {"Test 2": two(_getFile(test2_path), {isTest: true}) === solutions[1] ? "✅" : "❌"});
             } catch (err) {
                 return _handleError(test2_path)(err);
             }

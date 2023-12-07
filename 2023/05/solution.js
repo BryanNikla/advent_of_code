@@ -1,6 +1,6 @@
 module.exports = {one, two, solutions: [35, 46]};
 
-const {forX} = require(global.UTILITIES_PATH);
+const {forX, arrOfLength} = require(global.UTILITIES_PATH);
 
 function isInRange(n, min, max) {
     return n >= min && n <= max;
@@ -21,13 +21,7 @@ function parseInput(input) {
     }
     return {
         seeds: parts[0].split(": ")[1].split(" ").map(Number),
-        seed_soil: prepSection(parts[1]).map(parseMapping),
-        soil_fertilizer: prepSection(parts[2]).map(parseMapping),
-        fertilizer_water: prepSection(parts[3]).map(parseMapping),
-        water_light: prepSection(parts[4]).map(parseMapping),
-        light_temp: prepSection(parts[5]).map(parseMapping),
-        temp_humidity: prepSection(parts[6]).map(parseMapping),
-        humidity_location: prepSection(parts[7]).map(parseMapping),
+        maps: arrOfLength(7).map((_, i) => prepSection(parts[i + 1]).map(parseMapping)),
     };
 }
 
@@ -39,26 +33,28 @@ function findValueInMaps(value, maps) {
 }
 
 function one(input) {
-    const {seeds, ...maps} = parseInput(input);
-    return Math.min(...seeds.map((seed) => Object.values(maps).reduce((acc, map) => findValueInMaps(acc, map), seed)));
+    const {seeds, maps} = parseInput(input);
+    return Math.min(...seeds.map((seed) => maps.reduce((acc, map) => findValueInMaps(acc, map), seed)));
 }
 
-function two(input) {
-    const {seeds: seedData, ...maps} = parseInput(input);
-
-    const ranges = [];
-    while (seedData.length > 0) {
-        ranges.push([seedData.shift(), seedData.shift()]);
+function two(input, {isTest}) {
+    if (!isTest) {
+        // My solution is incredibly inefficent, but succesful.
+        // This is here to speed up a full run and skip this portion.
+        return "skip";
     }
+
+    const {seeds: seedData, maps} = parseInput(input);
+
+    const ranges = seedData.map((n, i, arr) => [n, arr[i + 1]]).filter((_, i) => i % 2 === 0);
 
     let lowest = null;
     ranges.forEach(([start, length]) => {
         forX(
             length,
             (seed) => {
-                const location = Object.values(maps).reduce((acc, map) => findValueInMaps(acc, map), seed);
+                const location = maps.reduce((acc, map) => findValueInMaps(acc, map), seed);
                 if (location < lowest || lowest == null) {
-                    console.log("new lowest location:", location);
                     lowest = location;
                 }
             },
