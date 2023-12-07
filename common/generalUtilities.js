@@ -16,6 +16,20 @@ function arraySum(arr = []) {
 }
 
 /**
+ * @description Sort an array of objects by a given property ASCENDING. To be used in the .sort() method
+ * @param {string!} property
+ * @returns {function(*, *): number}
+ */
+const sortASC = (property) => (a, b) => a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+
+/**
+ * @description Sort an array of objects by a given property DESCENDING. To be used in the .sort() method
+ * @param {string!} property
+ * @returns {function(*, *): number}
+ */
+const sortDESC = (property) => (a, b) => a[property] > b[property] ? -1 : a[property] < b[property] ? 1 : 0;
+
+/**
  * Prep to color the console output text
  * @param {'black'|'red'|'green'|'yellow'|'blue'|'magenta'|'cyan'|'white'}} color
  * @param {string} text
@@ -104,4 +118,6 @@ module.exports = {
     arrOfLength,
     forX,
     multiplyArray,
+    sortASC,
+    sortDESC,
 };
