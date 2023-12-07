@@ -67,6 +67,14 @@ function arrOfLength(length = 0) {
 }
 
 /**
+ * @description Multiply all numbers in an array
+ * @param {Array<Number>} arr
+ */
+function multiplyArray(arr = []) {
+    arr.reduce((acc, val) => acc * val, 1);
+}
+
+/**
  * @description Run a function x times
  * @param {Number} x - How many times to run the function
  * @param {function} fn - Single parameter, the iteration number (1-based)
@@ -95,4 +103,5 @@ module.exports = {
     reverseString,
     arrOfLength,
     forX,
+    multiplyArray,
 };
