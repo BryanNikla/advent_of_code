@@ -2,13 +2,15 @@ module.exports = {one, two, solutions: [6, 6]};
 
 function parseInput(inputString) {
     const [steps, _, ...mapLines] = inputString.split("\n");
-    const map = new Map(mapLines.map((s) => s.split(" = ")).map(([k, str]) => [k, str.replaceAll("(", "").replaceAll(")", "").split(", ")]));
-    return {steps, map};
+    return {
+        steps: steps.split(""),
+        map: new Map(mapLines.map((s) => s.split(" = ")).map(([k, str]) => [k, str.replaceAll("(", "").replaceAll(")", "").split(", ")])),
+    };
 }
 
-function useSteps(instructions) {
-    let [current, pos] = [-1, instructions.split("")];
-    return {next: () => (pos[++current % instructions.length] === "L" ? 0 : 1)};
+function useSteps(steps = []) {
+    let current = -1;
+    return {next: () => (steps[++current % steps.length] === "L" ? 0 : 1)};
 }
 
 function one(input) {
