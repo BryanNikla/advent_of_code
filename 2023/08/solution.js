@@ -1,44 +1,51 @@
-module.exports = {one, two, solutions: [6, 0]};
+////////////////////////////////////////////////////////////////
+module.exports = {one, two, solutions: [6, 6]};
+////////////////////////////////////////////////////////////////
 
 function parseInput(inputString) {
-    const [instructions, _, ...mapLines] = inputString.split("\n");
-    const map = new Map();
-    mapLines
-        .map((s) => s.split(" = "))
-        .forEach(([k, str]) => {
-            [left, right] = str.replaceAll("(", "").replaceAll(")", "").split(", ");
-            map.set(k, [left, right]);
-        });
-    return {instructions, map};
+    const [steps, _, ...mapLines] = inputString.split("\n");
+    const map = new Map(mapLines.map((s) => s.split(" = ")).map(([k, str]) => [k, str.replaceAll("(", "").replaceAll(")", "").split(", ")]));
+    return {steps, map};
 }
 
-function useNextInstruction(instructions) {
-    instructions = instructions.split("");
-    let current = -1;
+function useSteps(instructions) {
+    let [current, pos] = [-1, instructions.split("")];
     return {
         getNextStep() {
-            current++;
-            if (current > instructions.length - 1) {
+            if (++current > instructions.length - 1) {
                 current = 0;
             }
-            return instructions[current];
+            return pos[current] === "L" ? 0 : 1;
         },
     };
 }
 
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
 function one(input) {
-    const {instructions, map} = parseInput(input);
-    const {getNextStep} = useNextInstruction(instructions);
-    let steps = 0;
-    let position = "AAA";
-    while (position !== "ZZZ") {
-        steps++;
-        const [left, right] = map.get(position);
-        position = getNextStep() === "L" ? left : right;
+    const {steps, map} = parseInput(input);
+    const {getNextStep} = useSteps(steps);
+    let [i, pos] = [-1, "AAA"];
+    while (-1 < ++i && pos !== "ZZZ") {
+        pos = map.get(pos)[getNextStep()];
     }
-    return steps;
+    return i;
 }
 
 function two(input) {
-    return 0;
+    const {leastCommonMultiple} = require(global.UTILITIES_PATH);
+    const {steps, map} = parseInput(input);
+    return leastCommonMultiple(
+        Array.from(map.keys())
+            .filter((str) => str.endsWith("A"))
+            .map((key) => {
+                const {getNextStep} = useSteps(steps);
+                let [i, pos] = [-1, key];
+                while (-1 < ++i && !pos.endsWith("Z")) {
+                    pos = map.get(pos)[getNextStep()];
+                }
+                return i;
+            })
+    );
 }

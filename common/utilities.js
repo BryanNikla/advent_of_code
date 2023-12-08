@@ -3,4 +3,5 @@ module.exports = {
     ...require("./generalUtilities.js"),
     ...require("./arrayFilters.js"),
     ...require("./matrixUtilities.js"),
+    ...require("./mathUtilities.js"),
 };
