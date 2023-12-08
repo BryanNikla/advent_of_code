@@ -13,7 +13,7 @@ function parseInput(inputString) {
  * @param {Array} stepArray
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator
  */
-function* steps(stepArray = []) {
+function* stepGenerator(stepArray = []) {
     let current = -1;
     while (true) {
         yield stepArray[++current % stepArray.length] === "L" ? 0 : 1;
@@ -22,12 +22,11 @@ function* steps(stepArray = []) {
 
 function one(input) {
     const {stepsArray, map} = parseInput(input);
-    const stepGenerator = steps(stepsArray);
-    let [i, pos] = [-1, "AAA"];
-    while (-1 < ++i && pos !== "ZZZ") {
-        pos = map.get(pos)[stepGenerator.next().value];
+    let [steps, pos, gen] = [-1, "AAA", stepGenerator(stepsArray)];
+    while (-1 < ++steps && pos !== "ZZZ") {
+        pos = map.get(pos)[gen.next().value];
     }
-    return i;
+    return steps;
 }
 
 function two(input) {
@@ -36,13 +35,12 @@ function two(input) {
     return leastCommonMultiple(
         Array.from(map.keys())
             .filter((str) => str.endsWith("A"))
-            .map((key) => {
-                const stepGenerator = steps(stepsArray);
-                let [i, pos] = [-1, key];
-                while (-1 < ++i && !pos.endsWith("Z")) {
-                    pos = map.get(pos)[stepGenerator.next().value];
+            .map((pos) => {
+                let [steps, gen] = [-1, stepGenerator(stepsArray)];
+                while (-1 < ++steps && !pos.endsWith("Z")) {
+                    pos = map.get(pos)[gen.next().value];
                 }
-                return i;
+                return steps;
             })
     );
 }
