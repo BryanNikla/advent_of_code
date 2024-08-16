@@ -2,6 +2,7 @@ package main
 
 import (
 	year2023 "advent_of_code/2023/01"
+	utilities "advent_of_code/common"
 	"bufio"
 	"fmt"
 	"os"
@@ -16,18 +17,18 @@ func main() {
 }
 
 func introduction() {
-	fmt.Println("🎄  Advent of Code  🎅")
-	fmt.Println("----------------------")
-	fmt.Println("https://adventofcode.com/")
-	fmt.Print("Code By: Bryan Nikla")
+	fmt.Println("🎄", utilities.ColorText("green", "Advent of Code"), "🎅")
+	printHr()
+	fmt.Println(utilities.ColorText("cyan", "https://adventofcode.com/"))
+	fmt.Print(utilities.ColorText("cyan", "Code By: Bryan Nikla"))
 }
 
 func userInput(day *int, year *int) {
-	fmt.Println("\nEnter the year you want to run:")
+	fmt.Println(utilities.ColorText("red", "\n\nEnter the year you want to run:"))
 	input := bufio.NewScanner(os.Stdin)
 	input.Scan()
 	*year, _ = strconv.Atoi(input.Text())
-	fmt.Println("\nEnter the day you want to run:")
+	fmt.Println(utilities.ColorText("red", "\nEnter the day you want to run:"))
 	input.Scan()
 	*day, _ = strconv.Atoi(input.Text())
 	fmt.Println()
@@ -35,7 +36,7 @@ func userInput(day *int, year *int) {
 
 func solve(day int, year int) {
 	fmt.Println(year, "-", "Day", day)
-	fmt.Println("----------------------")
+	printHr()
 	var solve1, solve2, test1, test2 = getSolution(year, day)
 	printTestOutcome("Test 1", test1)
 	printTestOutcome("Test 2", test2)
@@ -67,4 +68,12 @@ func printTestOutcome(testName string, result bool) {
 
 func printSolution(name string, solution any) {
 	fmt.Println(name+":", solution)
+}
+
+func printHr() {
+	_, w := utilities.ConsoleSize()
+	for range w {
+		fmt.Print("-")
+	}
+	fmt.Print("\n")
 }
