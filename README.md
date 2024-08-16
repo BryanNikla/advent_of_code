@@ -1,6 +1,22 @@
-# Advent of Code
+# 🎄 Advent of Code 🎅
 
-## To Run Code
+This repository is meant as a collection of solutions for yearly Advent of Code puzzles in various different programming langauges.
+
+Each puzzle is provided by Advent of Code at https://adventofcode.com/
+
+## Go
+
+### To Run Code
+
+Execute code using Go:
+
+`go run .` or `go run main.go`
+
+The program will then prompt for year and day
+
+## Javascript
+
+### To Run Code
 
 Execute code using NodeJS:
 
@@ -15,7 +31,7 @@ This will prompt you for the year & day.
 
 ---
 
-### Optional arguments:
+#### Optional arguments:
 
 | Argument  | Options                                                       |
 | --------- | ------------------------------------------------------------- |
@@ -24,7 +40,7 @@ This will prompt you for the year & day.
 | -test     | Will only run tests for the given year/day                    |
 | -generate | Will generate directory & files needed for the given year/day |
 
-#### Examples:
+##### Examples:
 
 `node index.js -year 2023 -day 01`
 

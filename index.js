@@ -5,10 +5,10 @@ console.clear();
 
 // Set global variables
 global.ROOT_PATH = require("path").resolve(__dirname);
-global.UTILITIES_PATH = require("path").resolve(__dirname, "common", "utilities.js");
-global.ARRAY_FILTERS_PATH = require("path").resolve(__dirname, "common", "arrayFilters.js");
-global.MATRIX_UTILITIES_PATH = require("path").resolve(__dirname, "common", "matrixUtilities.js");
-global.GENERAL_UTILITIES_PATH = require("path").resolve(__dirname, "common", "generalUtilities.js");
+global.UTILITIES_PATH = require("path").resolve(__dirname, "javascript", "common", "utilities.js");
+global.ARRAY_FILTERS_PATH = require("path").resolve(__dirname, "javascript", "common", "arrayFilters.js");
+global.MATRIX_UTILITIES_PATH = require("path").resolve(__dirname, "javascript", "common", "matrixUtilities.js");
+global.GENERAL_UTILITIES_PATH = require("path").resolve(__dirname, "javascript", "common", "generalUtilities.js");
 
 const {zeroPad, isBetween} = require(global.UTILITIES_PATH);
 const {colorText} = require(global.GENERAL_UTILITIES_PATH);
@@ -95,10 +95,10 @@ function execute(year, day) {
             };
         }
 
-        const solution_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "solution.js");
-        const input_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "input.txt");
-        const test1_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test1.txt");
-        const test2_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test2.txt");
+        const solution_path = path.resolve(__dirname, "javascript", String(year), zeroPad(day, 2), "solution.js");
+        const input_path = path.resolve(__dirname, "javascript", String(year), zeroPad(day, 2), "input.txt");
+        const test1_path = path.resolve(__dirname, "javascript", String(year), zeroPad(day, 2), "test1.txt");
+        const test2_path = path.resolve(__dirname, "javascript", String(year), zeroPad(day, 2), "test2.txt");
 
         const rsp = {};
 
@@ -142,8 +142,8 @@ function execute(year, day) {
 function generateDay(year, day) {
     console.log(colorText("yellow", `Generating day ${day} for year ${year}`));
 
-    const yearPath = path.resolve(__dirname, String(year));
-    const dayPath = path.resolve(__dirname, String(year), zeroPad(day, 2));
+    const yearPath = path.resolve(__dirname, "javascript", String(year));
+    const dayPath = path.resolve(__dirname, "javascript", String(year), zeroPad(day, 2));
 
     if (!fs.existsSync(yearPath)) {
         fs.mkdirSync(yearPath);
@@ -153,11 +153,11 @@ function generateDay(year, day) {
         fs.mkdirSync(dayPath);
     }
 
-    const solutionPath = path.resolve(__dirname, String(year), zeroPad(day, 2), "solution.js");
-    const inputPath = path.resolve(__dirname, String(year), zeroPad(day, 2), "input.txt");
-    const test1Path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test1.txt");
-    const test2Path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test2.txt");
-    const readmePath = path.resolve(__dirname, String(year), zeroPad(day, 2), "README.md");
+    const solutionPath = path.resolve(__dirname, "javascript", String(year), zeroPad(day, 2), "solution.js");
+    const inputPath = path.resolve(__dirname, "javascript", String(year), zeroPad(day, 2), "input.txt");
+    const test1Path = path.resolve(__dirname, "javascript", String(year), zeroPad(day, 2), "test1.txt");
+    const test2Path = path.resolve(__dirname, "javascript", String(year), zeroPad(day, 2), "test2.txt");
+    const readmePath = path.resolve(__dirname, "javascript", String(year), zeroPad(day, 2), "README.md");
 
     if (!fs.existsSync(solutionPath)) {
         fs.writeFileSync(
