@@ -1,7 +1,8 @@
 package main
 
 import (
-	year2023 "advent_of_code/2023/01"
+	year2023Day1 "advent_of_code/2023/01"
+	year2023Day2 "advent_of_code/2023/02"
 	utilities "advent_of_code/common"
 	"bufio"
 	"fmt"
@@ -40,8 +41,8 @@ func solve(day int, year int) {
 	var solve1, solve2, test1, test2 = getSolution(year, day)
 	printTestOutcome("Test 1", test1)
 	printTestOutcome("Test 2", test2)
-	printSolution("Part 1", solve1)
-	printSolution("Part 2", solve2)
+	printSolution("Solution 1", solve1)
+	printSolution("Solution 2", solve2)
 }
 
 func getSolution(year int, day int) (any, any, bool, bool) {
@@ -49,7 +50,9 @@ func getSolution(year int, day int) (any, any, bool, bool) {
 	case 2023:
 		switch day {
 		case 1:
-			return year2023.Day1()
+			return year2023Day1.Day1()
+		case 2:
+			return year2023Day2.Day2()
 		default:
 			return nil, nil, false, false
 		}

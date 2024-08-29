@@ -82,3 +82,14 @@ func ConsoleSize() (int, int) {
 	}
 	return heigth, width
 }
+
+// Returns true if all elements in the slice satisfy the predicate, and false otherwise
+// Basically mimics Javascript's Array.every() method
+func Every[T any](slice []T, predicate func(T) bool) bool {
+	for _, element := range slice {
+		if !predicate(element) {
+			return false
+		}
+	}
+	return true
+}
