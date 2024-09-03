@@ -93,3 +93,49 @@ func Every[T any](slice []T, predicate func(T) bool) bool {
 	}
 	return true
 }
+
+func SumValuesInSlice[V int | int8 | int16 | int32 | int64 | float32 | float64, S []V](slice S) V {
+	var sum V
+	for _, value := range slice {
+		sum += value
+	}
+	return sum
+}
+
+func CallAtCords[V any, M [][]V](matrix M, x int, y int, fn func(V, int, int, M)) {
+	if x < 0 || y < 0 {
+		return
+	}
+	if len(matrix) <= x {
+		return
+	}
+	if len(matrix[x]) <= y {
+		return
+	}
+
+	fn(matrix[x][y], x, y, matrix)
+}
+
+func EachMatrix[Val any, M [][]Val](matrix M, fn func(Val, int, int, M)) {
+	for r, row := range matrix {
+		for c := range row {
+			fn(matrix[r][c], r, c, matrix)
+		}
+	}
+}
+
+// Calls function fn for every cordinate surounding a set of cords in a matrix
+func EachSurroundingInMatrix[Val any, M [][]Val](matrix M, x int, y int, fn func(Val, int, int, M)) {
+	CallAtCords(matrix, x, y-1, fn)
+	CallAtCords(matrix, x, y+1, fn)
+	CallAtCords(matrix, x-1, y, fn)
+	CallAtCords(matrix, x+1, y, fn)
+	CallAtCords(matrix, x-1, y-1, fn)
+	CallAtCords(matrix, x+1, y+1, fn)
+	CallAtCords(matrix, x-1, y+1, fn)
+	CallAtCords(matrix, x+1, y-1, fn)
+}
+
+func IsLastColOfMatrix[V any, M [][]V](matrix M, x int, y int) bool {
+	return y == len(matrix[x])-1
+}

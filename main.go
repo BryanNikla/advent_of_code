@@ -3,6 +3,7 @@ package main
 import (
 	year2023Day1 "advent_of_code/2023/01"
 	year2023Day2 "advent_of_code/2023/02"
+	year2023Day3 "advent_of_code/2023/03"
 	utilities "advent_of_code/common"
 	"bufio"
 	"fmt"
@@ -53,6 +54,8 @@ func getSolution(year int, day int) (any, any, bool, bool) {
 			return year2023Day1.Day1()
 		case 2:
 			return year2023Day2.Day2()
+		case 3:
+			return year2023Day3.Day3()
 		default:
 			return nil, nil, false, false
 		}
