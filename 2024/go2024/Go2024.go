@@ -1,10 +1,14 @@
 package go2024
 
-func Solution(day int) (any, any, bool, bool) {
+import (
+	"advent_of_code/utils"
+)
+
+func Execute(day int) utils.Solution {
 	switch day {
 	case 1:
 		return Day1()
 	}
 
-	return nil, nil, false, false
+	return utils.Solution{}
 }

@@ -1,24 +1,25 @@
 package year2023
 
 import (
-	utilities "advent_of_code/common"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"advent_of_code/utils"
 )
 
-var testSolutionPart1 int = 8
-var testSolutionPart2 int = 2286
-
-func Day2() (int, int, bool, bool) {
-	input := utilities.GetInputContent(2023, 2)
-	test1 := utilities.GetTestContent(2023, 2, 1)
-	test2 := utilities.GetTestContent(2023, 2, 2)
-	return part1(input), part2(input), part1(test1) == testSolutionPart1, part2(test2) == testSolutionPart2
+func Day2() utils.Solution {
+	input := utils.GetInputContent(2023, 2)
+	return utils.Solution{
+		Part1: part1(input),
+		Part2: part2(input),
+		Test1: part1(utils.GetTestContent(2023, 2, 1)) == 8,
+		Test2: part2(utils.GetTestContent(2023, 2, 2)) == 2286,
+	}
 }
 
 func part1(input string) int {
-	var sum int = 0
+	var sum int
 
 	available := set{
 		red:   12,
@@ -27,7 +28,7 @@ func part1(input string) int {
 	}
 
 	for _, game := range inputToGames(input) {
-		if utilities.Every(game.sets, func(set set) bool {
+		if utils.Every(game.sets, func(set set) bool {
 			return setIsLegal(set, available)
 		}) {
 			sum = sum + game.id
@@ -38,7 +39,7 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
-	var sum int = 0
+	var sum int
 	for _, game := range inputToGames(input) {
 		minSet := set{0, 0, 0}
 		for _, set := range game.sets {
@@ -72,7 +73,7 @@ type game struct {
 func inputToGames(input string) []game {
 	var games []game
 
-	lines := utilities.GetLines(input)
+	lines := utils.GetLines(input)
 
 	for _, line := range lines {
 		parts := strings.Split(line, ":")

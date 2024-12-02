@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"unicode/utf8"
 
 	year2023Day1 "advent_of_code/2023/01"
 	year2023Day2 "advent_of_code/2023/02"
 	year2023Day3 "advent_of_code/2023/03"
 	"advent_of_code/2024/go2024"
-	utilities "advent_of_code/common"
+	"advent_of_code/utils"
 )
 
 func main() {
@@ -21,34 +22,38 @@ func main() {
 }
 
 func introduction() {
-	fmt.Println("🎄", utilities.ColorText("green", "Advent of Code"), "🎅")
-	printHr()
-	fmt.Println(utilities.ColorText("cyan", "https://adventofcode.com/"))
-	fmt.Print(utilities.ColorText("cyan", "Code By: Bryan Nikla"))
+	printHolidayHr()
+	fmt.Println("🎄", utils.ColorText("green", "Advent of Code"), "🎅")
+	printHolidayHr()
+	fmt.Println(utils.ColorText("cyan", "https://adventofcode.com/"))
+	fmt.Print(utils.ColorText("cyan", "Code By: Bryan Nikla"))
 }
 
 func userInput(day *int, year *int) {
-	fmt.Println(utilities.ColorText("red", "\n\nEnter the year you want to run:"))
+	fmt.Println(utils.ColorText("red", "\n\nEnter the year you want to run:"))
 	input := bufio.NewScanner(os.Stdin)
 	input.Scan()
 	*year, _ = strconv.Atoi(input.Text())
-	fmt.Println(utilities.ColorText("red", "\nEnter the day you want to run:"))
+	fmt.Println(utils.ColorText("red", "\nEnter the day you want to run:"))
 	input.Scan()
 	*day, _ = strconv.Atoi(input.Text())
-	fmt.Println()
 }
 
 func solve(day int, year int) {
-	fmt.Println(year, "-", "Day", day)
-	printHr()
-	var solve1, solve2, test1, test2 = getSolution(year, day)
-	printTestOutcome("Test 1", test1)
-	printTestOutcome("Test 2", test2)
-	printSolution("Solution 1", solve1)
-	printSolution("Solution 2", solve2)
+	var solution = getSolution(year, day)
+
+	printFancyBox("Part 1", []string{
+		formatTestOutcome("Test", solution.Test1),
+		formatAnswer("Solution", solution.Part1),
+	}, "blue")
+
+	printFancyBox("Part 2", []string{
+		formatTestOutcome("Test", solution.Test2),
+		formatAnswer("Solution", solution.Part2),
+	}, "magenta")
 }
 
-func getSolution(year int, day int) (any, any, bool, bool) {
+func getSolution(year int, day int) utils.Solution {
 	switch year {
 	case 2023:
 		switch day {
@@ -59,31 +64,82 @@ func getSolution(year int, day int) (any, any, bool, bool) {
 		case 3:
 			return year2023Day3.Day3()
 		default:
-			return nil, nil, false, false
+			return utils.Solution{}
 		}
 	case 2024:
-		return go2024.Solution(day)
+		return go2024.Execute(day)
 	default:
-		return nil, nil, false, false
+		return utils.Solution{}
 	}
 }
 
-func printTestOutcome(testName string, result bool) {
+func formatTestOutcome(testName string, result bool) string {
 	if result {
-		fmt.Println(testName+":", "✅")
+		return formatAnswer(testName, "✅")
 	} else {
-		fmt.Println(testName+":", "❌")
+		return formatAnswer(testName, "❌")
 	}
 }
 
-func printSolution(name string, solution any) {
-	fmt.Println(name+":", solution)
+func formatAnswer(name string, solution any) string {
+	return fmt.Sprintf("%s: %v", name, solution)
 }
 
-func printHr() {
-	_, w := utilities.ConsoleSize()
-	for range w {
-		fmt.Print("-")
+func printHolidayHr() {
+	_, width := utils.ConsoleSize()
+	dashesToPrint := width - 5
+	if dashesToPrint > 80 {
+		dashesToPrint = 80
+	}
+	for i := 0; i < dashesToPrint; i++ {
+		if i%2 == 0 {
+			fmt.Print(utils.ColorText("red", "-"))
+		} else {
+			fmt.Print(utils.ColorText("green", "-"))
+		}
 	}
 	fmt.Print("\n")
+}
+
+func printFancyBox(label string, contents []string, color string) {
+	var width = 30 // minimum width of box
+	for _, line := range contents {
+		var length = utf8.RuneCountInString(line) + 5
+		if length > width {
+			width = length
+		}
+	}
+
+	// Print the top label
+	var labelDashCount = (width - utf8.RuneCountInString(label) - 2 - 2) / 2
+	var labelDashes string
+	for i := 0; i < labelDashCount; i++ {
+		labelDashes += "-"
+	}
+	fmt.Println(utils.ColorText(color, "\n|"+labelDashes+" "+label+" "+labelDashes+"|"))
+
+	// Print all contents
+	for _, line := range contents {
+		var whitespaceCount = width - utf8.RuneCountInString(line) - 2 - 3
+
+		// TODO: Emojis do weird things for character counts/lengths when  printing. This is a dumb workaround for now.. solve one day maybe.
+		var emojiDiff = len(line) - utf8.RuneCountInString(line)
+		if emojiDiff > 0 {
+			whitespaceCount = whitespaceCount - emojiDiff + 1
+		}
+
+		var whitespace string
+		for i := 0; i < whitespaceCount; i++ {
+			whitespace += " "
+		}
+		fmt.Println(utils.ColorText(color, "|"), line, whitespace, utils.ColorText(color, "|"))
+	}
+
+	// Print bottom of box
+	var bottomDashCount = width - 2
+	var bottomDashes string
+	for i := 0; i < bottomDashCount; i++ {
+		bottomDashes += "-"
+	}
+	fmt.Println(utils.ColorText(color, "|"+bottomDashes+"|"))
 }

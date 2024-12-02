@@ -1,21 +1,24 @@
 package year2023
 
 import (
-	utilities "advent_of_code/common"
 	"strconv"
 	"strings"
+
+	"advent_of_code/utils"
 )
 
-func Day3() (int, int, bool, bool) {
-	input := utilities.GetInputContent(2023, 3)
-	test1 := utilities.GetTestContent(2023, 3, 1)
+func Day3() utils.Solution {
+	input := utils.GetInputContent(2023, 3)
 	// test2 := utilities.GetTestContent(2023, 3, 2)
-
-	return part1(input), 0, part1(test1) == 4361, false
+	return utils.Solution{
+		Part1: part1(input),
+		Part2: 0,
+		Test1: part1(utils.GetTestContent(2023, 3, 1)) == 4361,
+	}
 }
 
 func part1(input string) int {
-	var lines = utilities.GetLines(input)
+	var lines = utils.GetLines(input)
 
 	// make an empty matrix
 	var matrix [][]string
@@ -29,14 +32,14 @@ func part1(input string) int {
 	var currentNumberString string = ""
 	var currentNumberIsPart bool = false
 
-	utilities.EachMatrix(matrix, func(char string, x int, y int, matrix [][]string) {
+	utils.EachMatrix(matrix, func(char string, x int, y int, matrix [][]string) {
 
 		if isDigit(char) {
 			currentNumberString = currentNumberString + char
 
 			// Only bother with this if we haven't already determined this is a part
 			if !currentNumberIsPart {
-				utilities.EachSurroundingInMatrix(matrix, x, y, func(c string, xx int, yy int, m [][]string) {
+				utils.EachSurroundingInMatrix(matrix, x, y, func(c string, xx int, yy int, m [][]string) {
 					if isSymbol(c) {
 						currentNumberIsPart = true
 					}
@@ -45,7 +48,7 @@ func part1(input string) int {
 		}
 
 		// If we're at the end of the number, or the end of the row add to parts if it's a part
-		if utilities.IsLastColOfMatrix(matrix, x, y) || !isDigit(char) {
+		if utils.IsLastColOfMatrix(matrix, x, y) || !isDigit(char) {
 			if currentNumberIsPart {
 				i, _ := strconv.Atoi(currentNumberString)
 				parts = append(parts, i)
@@ -55,7 +58,7 @@ func part1(input string) int {
 		}
 	})
 
-	return utilities.SumValuesInSlice(parts)
+	return utils.SumValuesInSlice(parts)
 }
 
 func isDigit(char string) bool {

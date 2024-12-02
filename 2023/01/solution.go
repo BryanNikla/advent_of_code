@@ -1,24 +1,30 @@
 package year2023
 
 import (
-	utilities "advent_of_code/common"
 	"regexp"
 	"strconv"
+
+	"advent_of_code/utils"
 )
 
 var testSolutionPart1 int = 142
 var testSolutionPart2 int = 281
 
-func Day1() (string, string, bool, bool) {
-	input := utilities.GetInputContent(2023, 1)
-	test1 := utilities.GetTestContent(2023, 1, 1)
-	test2 := utilities.GetTestContent(2023, 1, 2)
+func Day1() utils.Solution {
+	input := utils.GetInputContent(2023, 1)
+	test1 := utils.GetTestContent(2023, 1, 1)
+	test2 := utils.GetTestContent(2023, 1, 2)
 
-	return strconv.Itoa(part1(input)), strconv.Itoa(part2(input)), part1(test1) == testSolutionPart1, part2(test2) == testSolutionPart2
+	return utils.Solution{
+		Part1: strconv.Itoa(part1(input)),
+		Part2: strconv.Itoa(part2(input)),
+		Test1: part1(test1) == testSolutionPart1,
+		Test2: part2(test2) == testSolutionPart2,
+	}
 }
 
 func part1(input string) int {
-	lines := utilities.GetLines(input)
+	lines := utils.GetLines(input)
 
 	var numbers []string
 
@@ -33,7 +39,7 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
-	lines := utilities.GetLines(input)
+	lines := utils.GetLines(input)
 
 	var numbers []string
 

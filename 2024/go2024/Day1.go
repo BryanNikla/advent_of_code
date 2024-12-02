@@ -4,38 +4,39 @@ import (
 	"sort"
 	"strings"
 
-	utilities "advent_of_code/common"
+	"advent_of_code/utils"
 )
 
 var testSolution1 = 11
 var testSolution2 = 31
 
-func Day1() (any, any, bool, bool) {
-	input := utilities.GetInputContent(2024, 1)
-	test1 := utilities.GetTestContent(2024, 1, 1)
-	test2 := utilities.GetTestContent(2024, 1, 1) // same test data for each part
+func Day1() utils.Solution {
+	input := utils.GetInputContent(2024, 1)
+	testInput := utils.GetTestContent(2024, 1, 1) // Test 1 & 2 use same data
 
-	return part1(input),
-		part2(input),
-		part1(test1) == testSolution1,
-		part2(test2) == testSolution2
+	return utils.Solution{
+		Part1: part1(input),
+		Part2: part2(input),
+		Test1: part1(testInput) == 11,
+		Test2: part2(testInput) == 31,
+	}
 }
 
 func part1(input string) int {
-	lines := utilities.GetLines(input)
+	lines := utils.GetLines(input)
 	leftNumbers, rightNumbers := linesToNumberSlices(lines)
 	sort.Ints(leftNumbers)
 	sort.Ints(rightNumbers)
 
 	var total int
 	for i, left := range leftNumbers {
-		total += utilities.AbsoluteValue(left - rightNumbers[i])
+		total += utils.AbsoluteValue(left - rightNumbers[i])
 	}
 	return total
 }
 
 func part2(input string) int {
-	lines := utilities.GetLines(input)
+	lines := utils.GetLines(input)
 	leftNumbers, rightNumbers := linesToNumberSlices(lines)
 
 	// Create a map of value occurrences in the rightNumbers slice
@@ -60,8 +61,8 @@ func linesToNumberSlices(lines []string) ([]int, []int) {
 	right := make([]int, 0, len(lines))
 	for _, line := range lines {
 		parts := strings.Split(line, "   ")
-		left = append(left, utilities.StringToInteger(parts[0]))
-		right = append(right, utilities.StringToInteger(parts[1]))
+		left = append(left, utils.StringToInteger(parts[0]))
+		right = append(right, utils.StringToInteger(parts[1]))
 	}
 	return left, right
 }

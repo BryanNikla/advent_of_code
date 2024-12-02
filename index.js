@@ -5,10 +5,10 @@ console.clear();
 
 // Set global variables
 global.ROOT_PATH = require("path").resolve(__dirname);
-global.UTILITIES_PATH = require("path").resolve(__dirname, "common", "utilities.js");
-global.ARRAY_FILTERS_PATH = require("path").resolve(__dirname, "common", "arrayFilters.js");
-global.MATRIX_UTILITIES_PATH = require("path").resolve(__dirname, "common", "matrixUtilities.js");
-global.GENERAL_UTILITIES_PATH = require("path").resolve(__dirname, "common", "generalUtilities.js");
+global.UTILITIES_PATH = require("path").resolve(__dirname, "utils", "utilities.js");
+global.ARRAY_FILTERS_PATH = require("path").resolve(__dirname, "utils", "arrayFilters.js");
+global.MATRIX_UTILITIES_PATH = require("path").resolve(__dirname, "utils", "matrixUtilities.js");
+global.GENERAL_UTILITIES_PATH = require("path").resolve(__dirname, "utils", "generalUtilities.js");
 
 const {zeroPad, isBetween} = require(global.UTILITIES_PATH);
 const {colorText} = require(global.GENERAL_UTILITIES_PATH);
