@@ -1,4 +1,4 @@
-package utilities
+package common
 
 import (
 	"fmt"
@@ -28,6 +28,23 @@ func GetTestContent(year int, day int, testNumber int) string {
 
 func GetLines(input string) []string {
 	return strings.Split(input, "\n")
+}
+
+// StringToInteger - Simpler string to integer that handles error (really just used to clean up solution logic)
+func StringToInteger(input string) int {
+	integer, err := strconv.Atoi(input)
+	if err != nil {
+		panic(err)
+	}
+	return integer
+}
+
+// abs - Helper function to calculate the absolute value
+func AbsoluteValue(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }
 
 func ColorText(color string, text string) string {

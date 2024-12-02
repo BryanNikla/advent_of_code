@@ -1,14 +1,16 @@
 package main
 
 import (
-	year2023Day1 "advent_of_code/2023/01"
-	year2023Day2 "advent_of_code/2023/02"
-	year2023Day3 "advent_of_code/2023/03"
-	utilities "advent_of_code/common"
 	"bufio"
 	"fmt"
 	"os"
 	"strconv"
+
+	year2023Day1 "advent_of_code/2023/01"
+	year2023Day2 "advent_of_code/2023/02"
+	year2023Day3 "advent_of_code/2023/03"
+	"advent_of_code/2024/go2024"
+	utilities "advent_of_code/common"
 )
 
 func main() {
@@ -59,6 +61,8 @@ func getSolution(year int, day int) (any, any, bool, bool) {
 		default:
 			return nil, nil, false, false
 		}
+	case 2024:
+		return go2024.Solution(day)
 	default:
 		return nil, nil, false, false
 	}
