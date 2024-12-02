@@ -15,14 +15,14 @@ func Day1() utils.Solution {
 	testInput := utils.GetTestContent(2024, 1, 1) // Test 1 & 2 use same data
 
 	return utils.Solution{
-		Part1: part1(input),
-		Part2: part2(input),
-		Test1: part1(testInput) == 11,
-		Test2: part2(testInput) == 31,
+		Part1: day1part1(input),
+		Part2: day1part2(input),
+		Test1: day1part1(testInput) == 11,
+		Test2: day1part2(testInput) == 31,
 	}
 }
 
-func part1(input string) int {
+func day1part1(input string) int {
 	lines := utils.GetLines(input)
 	leftNumbers, rightNumbers := linesToNumberSlices(lines)
 	sort.Ints(leftNumbers)
@@ -35,7 +35,7 @@ func part1(input string) int {
 	return total
 }
 
-func part2(input string) int {
+func day1part2(input string) int {
 	lines := utils.GetLines(input)
 	leftNumbers, rightNumbers := linesToNumberSlices(lines)
 
