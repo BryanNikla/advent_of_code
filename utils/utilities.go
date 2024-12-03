@@ -44,12 +44,20 @@ func StringToInteger(input string) int {
 }
 
 // Reduce - Reducer for Slices. Initial value is always default for value type
-func Reduce[T any, V any](slice []T, reducer func(accumulated V, currentValue T) V) V {
+func Reduce[T any, V any](slice []T, reducer func(accumulated V, currentValue T, currentIndex int) V) V {
 	var value V
 	for i := 0; i < len(slice); i++ {
-		value = reducer(value, slice[i])
+		value = reducer(value, slice[i], i)
 	}
 	return value
+}
+
+func ReverseString(str string) string {
+	runes := []rune(str)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+	return string(runes)
 }
 
 // AbsoluteValue - Helper function to calculate the absolute value

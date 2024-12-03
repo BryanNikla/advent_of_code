@@ -20,7 +20,7 @@ func Solve() utils.Solution {
 
 func part1(input string) int {
 	var reports = linesToReports(utils.GetLines(input))
-	return utils.Reduce(reports, func(safeReports int, report []int) int {
+	return utils.Reduce(reports, func(safeReports int, report []int, _ int) int {
 		if testReportAllSameDirection(report) && testReportSafeGaps(report) {
 			return safeReports + 1
 		}
@@ -30,7 +30,7 @@ func part1(input string) int {
 
 func part2(input string) int {
 	var reports = linesToReports(utils.GetLines(input))
-	return utils.Reduce(reports, func(safeReports int, report []int) int {
+	return utils.Reduce(reports, func(safeReports int, report []int, _ int) int {
 		if recursiveTest(report, 0) {
 			return safeReports + 1
 		}
