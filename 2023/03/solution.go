@@ -11,6 +11,7 @@ func Day3() utils.Solution {
 	input := utils.GetInputContent(2023, 3)
 	// test2 := utilities.GetTestContent(2023, 3, 2)
 	return utils.Solution{
+		Day:   3,
 		Part1: part1(input),
 		Part2: 0,
 		Test1: part1(utils.GetTestContent(2023, 3, 1)) == 4361,

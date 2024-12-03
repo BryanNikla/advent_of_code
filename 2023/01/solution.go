@@ -16,6 +16,7 @@ func Day1() utils.Solution {
 	test2 := utils.GetTestContent(2023, 1, 2)
 
 	return utils.Solution{
+		Day:   1,
 		Part1: strconv.Itoa(part1(input)),
 		Part2: strconv.Itoa(part2(input)),
 		Test1: part1(test1) == testSolutionPart1,

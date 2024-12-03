@@ -11,6 +11,7 @@ import (
 func Day2() utils.Solution {
 	input := utils.GetInputContent(2023, 2)
 	return utils.Solution{
+		Day:   2,
 		Part1: part1(input),
 		Part2: part2(input),
 		Test1: part1(utils.GetTestContent(2023, 2, 1)) == 8,

@@ -10,7 +10,8 @@ import (
 	year2023Day1 "advent_of_code/2023/01"
 	year2023Day2 "advent_of_code/2023/02"
 	year2023Day3 "advent_of_code/2023/03"
-	"advent_of_code/2024/go2024"
+	year2024day01 "advent_of_code/2024/01"
+	year2024day02 "advent_of_code/2024/02"
 	"advent_of_code/utils"
 )
 
@@ -40,36 +41,50 @@ func userInput(day *int, year *int) {
 }
 
 func solve(day int, year int) {
-	var solution = getSolution(year, day)
+	for _, solution := range getSolutions(year, day) {
+		printFancyBox(fmt.Sprintf("Day %d | Part 1", solution.Day), []string{
+			formatTestOutcome("Test", solution.Test1),
+			formatAnswer("Solution", solution.Part1),
+		}, "blue")
 
-	printFancyBox("Part 1", []string{
-		formatTestOutcome("Test", solution.Test1),
-		formatAnswer("Solution", solution.Part1),
-	}, "blue")
-
-	printFancyBox("Part 2", []string{
-		formatTestOutcome("Test", solution.Test2),
-		formatAnswer("Solution", solution.Part2),
-	}, "magenta")
+		printFancyBox(fmt.Sprintf("Day %d | Part 2", solution.Day), []string{
+			formatTestOutcome("Test", solution.Test2),
+			formatAnswer("Solution", solution.Part2),
+		}, "magenta")
+	}
 }
 
-func getSolution(year int, day int) utils.Solution {
+func getSolutions(year int, day int) []utils.Solution {
 	switch year {
 	case 2023:
 		switch day {
 		case 1:
-			return year2023Day1.Day1()
+			return []utils.Solution{year2023Day1.Day1()}
 		case 2:
-			return year2023Day2.Day2()
+			return []utils.Solution{year2023Day2.Day2()}
 		case 3:
-			return year2023Day3.Day3()
+			return []utils.Solution{year2023Day3.Day3()}
 		default:
-			return utils.Solution{}
+			return []utils.Solution{
+				year2023Day1.Day1(),
+				year2023Day2.Day2(),
+				year2023Day3.Day3(),
+			}
 		}
 	case 2024:
-		return go2024.Execute(day)
+		switch day {
+		case 1:
+			return []utils.Solution{year2024day01.Solve()}
+		case 2:
+			return []utils.Solution{year2024day02.Solve()}
+		default:
+			return []utils.Solution{
+				year2024day01.Solve(),
+				year2024day02.Solve(),
+			}
+		}
 	default:
-		return utils.Solution{}
+		return []utils.Solution{}
 	}
 }
 
@@ -102,7 +117,7 @@ func printHolidayHr() {
 }
 
 func printFancyBox(label string, contents []string, color string) {
-	var width = 30 // minimum width of box
+	var width = 50 // minimum width of box
 	for _, line := range contents {
 		var length = utf8.RuneCountInString(line) + 5
 		if length > width {

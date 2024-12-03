@@ -16,6 +16,10 @@ func GetFileContent(path string) string {
 	return string(b)
 }
 
+func GetAllInputs(year int, day int) (string, string, string) {
+	return GetInputContent(year, day), GetTestContent(year, day, 1), GetTestContent(year, day, 2)
+}
+
 func GetInputContent(year int, day int) string {
 	var path = fmt.Sprintf("%d/%02d/input.txt", year, day)
 	return GetFileContent(path)
@@ -39,7 +43,16 @@ func StringToInteger(input string) int {
 	return integer
 }
 
-// abs - Helper function to calculate the absolute value
+// Reduce - Reducer for Slices. Initial value is always default for value type
+func Reduce[T any, V any](slice []T, reducer func(accumulated V, currentValue T) V) V {
+	var value V
+	for i := 0; i < len(slice); i++ {
+		value = reducer(value, slice[i])
+	}
+	return value
+}
+
+// AbsoluteValue - Helper function to calculate the absolute value
 func AbsoluteValue(x int) int {
 	if x < 0 {
 		return -x
@@ -89,7 +102,7 @@ func ConsoleSize() (int, int) {
 	s := string(out)
 	s = strings.TrimSpace(s)
 	sArr := strings.Split(s, " ")
-	heigth, err := strconv.Atoi(sArr[0])
+	height, err := strconv.Atoi(sArr[0])
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -97,10 +110,10 @@ func ConsoleSize() (int, int) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return heigth, width
+	return height, width
 }
 
-// Returns true if all elements in the slice satisfy the predicate, and false otherwise
+// Every - Returns true if all elements in the slice satisfy the predicate, and false otherwise
 // Basically mimics Javascript's Array.every() method
 func Every[T any](slice []T, predicate func(T) bool) bool {
 	for _, element := range slice {
@@ -141,7 +154,7 @@ func EachMatrix[Val any, M [][]Val](matrix M, fn func(Val, int, int, M)) {
 	}
 }
 
-// Calls function fn for every cordinate surounding a set of cords in a matrix
+// EachSurroundingInMatrix - Calls function fn for every coordinate surrounding a set of cords in a matrix
 func EachSurroundingInMatrix[Val any, M [][]Val](matrix M, x int, y int, fn func(Val, int, int, M)) {
 	CallAtCords(matrix, x, y-1, fn)
 	CallAtCords(matrix, x, y+1, fn)
