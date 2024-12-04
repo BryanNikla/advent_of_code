@@ -157,6 +157,7 @@ func CallAtCords[V any, M [][]V](matrix M, x int, y int, fn func(V, int, int, M)
 func EachMatrix[Val any, M [][]Val](matrix M, fn func(Val, int, int, M)) {
 	for r, row := range matrix {
 		for c := range row {
+			// TODO: Can possibly replace this matrix[r][c] with a call to GetValueAtCords()
 			fn(matrix[r][c], r, c, matrix)
 		}
 	}
@@ -176,4 +177,24 @@ func EachSurroundingInMatrix[Val any, M [][]Val](matrix M, x int, y int, fn func
 
 func IsLastColOfMatrix[V any, M [][]V](matrix M, x int, y int) bool {
 	return y == len(matrix[x])-1
+}
+
+// GetValueAtCords - Return value present at matrix coordinates.
+// Handles invalid coordinates gracefully by returning the default value for the expected type of value
+func GetValueAtCords[V any, M [][]V](matrix M, x int, y int) V {
+	defer func() V {
+		recover()
+		var defaultValue V
+		return defaultValue
+	}()
+	return matrix[x][y]
+}
+
+// LinesToCharacterMatrix - Return a matrix of individual string characters from a slice of strings (lines)
+func LinesToCharacterMatrix(lines []string) [][]string {
+	var matrix [][]string
+	for _, line := range lines {
+		matrix = append(matrix, strings.Split(line, ""))
+	}
+	return matrix
 }
