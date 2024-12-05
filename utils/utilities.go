@@ -34,6 +34,11 @@ func GetLines(input string) []string {
 	return strings.Split(input, "\n")
 }
 
+func MiddleItem[V any](slice []V) V {
+	middleIndex := len(slice) / 2
+	return slice[middleIndex]
+}
+
 // StringToInteger - Simpler string to integer that handles error (really just used to clean up solution logic)
 func StringToInteger(input string) int {
 	integer, err := strconv.Atoi(input)
