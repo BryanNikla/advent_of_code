@@ -8,7 +8,7 @@ import (
 )
 
 func Solve() utils.Solution {
-	testInput1, testInput2 := utils.GetAllInputs(2024, 2)
+	testInput1, testInput2 := utils.GetInputs(2024, 2)
 	return utils.Solution{
 		Day:   2,
 		Test1: part1(testInput1) == 2,

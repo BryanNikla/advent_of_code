@@ -96,8 +96,8 @@ function execute(year, day) {
         }
 
         const solution_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "solution.js");
-        const test1_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test1.txt");
-        const test2_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test2.txt");
+        const test1_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "part1.txt");
+        const test2_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "part2.txt");
 
         const rsp = {};
 
@@ -139,8 +139,8 @@ function generateDay(year, day) {
     }
 
     const solutionPath = path.resolve(__dirname, String(year), zeroPad(day, 2), "solution.js");
-    const test1Path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test1.txt");
-    const test2Path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test2.txt");
+    const test1Path = path.resolve(__dirname, String(year), zeroPad(day, 2), "part1.txt");
+    const test2Path = path.resolve(__dirname, String(year), zeroPad(day, 2), "part2.txt");
 
     if (!fs.existsSync(solutionPath)) {
         fs.writeFileSync(

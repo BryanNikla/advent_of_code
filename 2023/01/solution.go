@@ -11,7 +11,7 @@ var testSolutionPart1 int = 142
 var testSolutionPart2 int = 281
 
 func Day1() utils.Solution {
-	test1, test2 := utils.GetAllInputs(2023, 1)
+	test1, test2 := utils.GetInputs(2023, 1)
 	return utils.Solution{
 		Day:   1,
 		Test1: part1(test1) == testSolutionPart1,
