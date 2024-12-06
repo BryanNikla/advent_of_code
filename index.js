@@ -96,7 +96,6 @@ function execute(year, day) {
         }
 
         const solution_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "solution.js");
-        const input_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "input.txt");
         const test1_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test1.txt");
         const test2_path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test2.txt");
 
@@ -104,20 +103,6 @@ function execute(year, day) {
 
         try {
             let {one, two, solutions} = require(solution_path);
-
-            if (!process.argv.includes("-test")) {
-                try {
-                    Object.assign(rsp, {"Solution 1": one(_getFile(input_path), {isTest: false})});
-                } catch (err) {
-                    return _handleError(input_path)(err);
-                }
-
-                try {
-                    Object.assign(rsp, {"Solution 2": two(_getFile(input_path), {isTest: false})});
-                } catch (err) {
-                    return _handleError(input_path)(err);
-                }
-            }
 
             try {
                 Object.assign(rsp, {"Test 1": one(_getFile(test1_path), {isTest: true}) === solutions[0] ? "✅" : "❌"});
@@ -154,10 +139,8 @@ function generateDay(year, day) {
     }
 
     const solutionPath = path.resolve(__dirname, String(year), zeroPad(day, 2), "solution.js");
-    const inputPath = path.resolve(__dirname, String(year), zeroPad(day, 2), "input.txt");
     const test1Path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test1.txt");
     const test2Path = path.resolve(__dirname, String(year), zeroPad(day, 2), "test2.txt");
-    const readmePath = path.resolve(__dirname, String(year), zeroPad(day, 2), "README.md");
 
     if (!fs.existsSync(solutionPath)) {
         fs.writeFileSync(
@@ -175,19 +158,11 @@ function generateDay(year, day) {
         );
     }
 
-    if (!fs.existsSync(inputPath)) {
-        fs.writeFileSync(inputPath, "");
-    }
-
     if (!fs.existsSync(test1Path)) {
         fs.writeFileSync(test1Path, "");
     }
 
     if (!fs.existsSync(test2Path)) {
         fs.writeFileSync(test2Path, "");
-    }
-
-    if (!fs.existsSync(readmePath)) {
-        fs.writeFileSync(readmePath, "");
     }
 }

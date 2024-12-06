@@ -11,14 +11,9 @@ var testSolutionPart1 int = 142
 var testSolutionPart2 int = 281
 
 func Day1() utils.Solution {
-	input := utils.GetInputContent(2023, 1)
-	test1 := utils.GetTestContent(2023, 1, 1)
-	test2 := utils.GetTestContent(2023, 1, 2)
-
+	test1, test2 := utils.GetAllInputs(2023, 1)
 	return utils.Solution{
 		Day:   1,
-		Part1: strconv.Itoa(part1(input)),
-		Part2: strconv.Itoa(part2(input)),
 		Test1: part1(test1) == testSolutionPart1,
 		Test2: part2(test2) == testSolutionPart2,
 	}

@@ -7,10 +7,9 @@ import (
 )
 
 func Day3() utils.Solution {
-	input, testInput1, _ := utils.GetAllInputs(2023, 3)
+	testInput1, _ := utils.GetAllInputs(2023, 3)
 	return utils.Solution{
 		Day:   3,
-		Part1: part1(input),
 		Test1: part1(testInput1) == 4361,
 	}
 }

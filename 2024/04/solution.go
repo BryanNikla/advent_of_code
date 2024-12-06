@@ -5,11 +5,9 @@ import (
 )
 
 func Solve() utils.Solution {
-	input, testInput1, testInput2 := utils.GetAllInputs(2024, 4)
+	testInput1, testInput2 := utils.GetAllInputs(2024, 4)
 	return utils.Solution{
 		Day:   4,
-		Part1: part1(input),
-		Part2: part2(input),
 		Test1: part1(testInput1) == 18,
 		Test2: part2(testInput2) == 9,
 	}

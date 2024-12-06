@@ -16,13 +16,8 @@ func GetFileContent(path string) string {
 	return string(b)
 }
 
-func GetAllInputs(year int, day int) (string, string, string) {
-	return GetInputContent(year, day), GetTestContent(year, day, 1), GetTestContent(year, day, 2)
-}
-
-func GetInputContent(year int, day int) string {
-	var path = fmt.Sprintf("%d/%02d/input.txt", year, day)
-	return GetFileContent(path)
+func GetAllInputs(year int, day int) (string, string) {
+	return GetTestContent(year, day, 1), GetTestContent(year, day, 2)
 }
 
 func GetTestContent(year int, day int, testNumber int) string {
