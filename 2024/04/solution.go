@@ -18,38 +18,54 @@ func Solve() utils.Solution {
 func part1(input string) int {
 	var count int
 	matrix := utils.LinesToCharacterMatrix(utils.GetLines(input))
-	utils.EachMatrix(matrix, func(char string, x int, y int, matrix [][]string) {
+	utils.EachMatrix(matrix, func(char string, cords utils.Coordinates, matrix [][]string) {
 		if char == "X" {
 			// Test forwards along X axis
-			if utils.GetValueAtCords(matrix, x+1, y) == "M" && utils.GetValueAtCords(matrix, x+2, y) == "A" && utils.GetValueAtCords(matrix, x+3, y) == "S" {
+			if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 1, Y: cords.Y}) == "M" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 2, Y: cords.Y}) == "A" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 3, Y: cords.Y}) == "S" {
 				count++
 			}
 			// Test backwards along X axis
-			if utils.GetValueAtCords(matrix, x-1, y) == "M" && utils.GetValueAtCords(matrix, x-2, y) == "A" && utils.GetValueAtCords(matrix, x-3, y) == "S" {
+			if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 1, Y: cords.Y}) == "M" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 2, Y: cords.Y}) == "A" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 3, Y: cords.Y}) == "S" {
 				count++
 			}
 			// test Up along Y axis
-			if utils.GetValueAtCords(matrix, x, y+1) == "M" && utils.GetValueAtCords(matrix, x, y+2) == "A" && utils.GetValueAtCords(matrix, x, y+3) == "S" {
+			if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X, Y: cords.Y + 1}) == "M" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X, Y: cords.Y + 2}) == "A" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X, Y: cords.Y + 3}) == "S" {
 				count++
 			}
 			// test down along Y axis
-			if utils.GetValueAtCords(matrix, x, y-1) == "M" && utils.GetValueAtCords(matrix, x, y-2) == "A" && utils.GetValueAtCords(matrix, x, y-3) == "S" {
+			if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X, Y: cords.Y - 1}) == "M" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X, Y: cords.Y - 2}) == "A" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X, Y: cords.Y - 3}) == "S" {
 				count++
 			}
 			// test Diagonal north-east
-			if utils.GetValueAtCords(matrix, x+1, y+1) == "M" && utils.GetValueAtCords(matrix, x+2, y+2) == "A" && utils.GetValueAtCords(matrix, x+3, y+3) == "S" {
+			if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 1, Y: cords.Y + 1}) == "M" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 2, Y: cords.Y + 2}) == "A" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 3, Y: cords.Y + 3}) == "S" {
 				count++
 			}
 			// test Diagonal south-east
-			if utils.GetValueAtCords(matrix, x+1, y-1) == "M" && utils.GetValueAtCords(matrix, x+2, y-2) == "A" && utils.GetValueAtCords(matrix, x+3, y-3) == "S" {
+			if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 1, Y: cords.Y - 1}) == "M" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 2, Y: cords.Y - 2}) == "A" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 3, Y: cords.Y - 3}) == "S" {
 				count++
 			}
 			// test Diagonal south-west
-			if utils.GetValueAtCords(matrix, x-1, y-1) == "M" && utils.GetValueAtCords(matrix, x-2, y-2) == "A" && utils.GetValueAtCords(matrix, x-3, y-3) == "S" {
+			if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 1, Y: cords.Y - 1}) == "M" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 2, Y: cords.Y - 2}) == "A" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 3, Y: cords.Y - 3}) == "S" {
 				count++
 			}
 			// test Diagonal north-west
-			if utils.GetValueAtCords(matrix, x-1, y+1) == "M" && utils.GetValueAtCords(matrix, x-2, y+2) == "A" && utils.GetValueAtCords(matrix, x-3, y+3) == "S" {
+			if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 1, Y: cords.Y + 1}) == "M" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 2, Y: cords.Y + 2}) == "A" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 3, Y: cords.Y + 3}) == "S" {
 				count++
 			}
 		}
@@ -61,37 +77,45 @@ func part1(input string) int {
 func part2(input string) int {
 	var count int
 	matrix := utils.LinesToCharacterMatrix(utils.GetLines(input))
-	utils.EachMatrix(matrix, func(char string, x int, y int, matrix [][]string) {
+	utils.EachMatrix(matrix, func(char string, cords utils.Coordinates, matrix [][]string) {
 		if char == "A" {
 			// M.M
 			// .A.
 			// S.S
-			if utils.GetValueAtCords(matrix, x-1, y+1) == "M" && utils.GetValueAtCords(matrix, x+1, y+1) == "M" {
-				if utils.GetValueAtCords(matrix, x-1, y-1) == "S" && utils.GetValueAtCords(matrix, x+1, y-1) == "S" {
+			if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 1, Y: cords.Y + 1}) == "M" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 1, Y: cords.Y + 1}) == "M" {
+				if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 1, Y: cords.Y - 1}) == "S" &&
+					utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 1, Y: cords.Y - 1}) == "S" {
 					count++
 				}
 			}
 			// M.S
 			// .A.
 			// M.S
-			if utils.GetValueAtCords(matrix, x-1, y+1) == "M" && utils.GetValueAtCords(matrix, x+1, y+1) == "S" {
-				if utils.GetValueAtCords(matrix, x-1, y-1) == "M" && utils.GetValueAtCords(matrix, x+1, y-1) == "S" {
+			if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 1, Y: cords.Y + 1}) == "M" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 1, Y: cords.Y + 1}) == "S" {
+				if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 1, Y: cords.Y - 1}) == "M" &&
+					utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 1, Y: cords.Y - 1}) == "S" {
 					count++
 				}
 			}
 			// S.S
 			// .A.
 			// M.M
-			if utils.GetValueAtCords(matrix, x-1, y+1) == "S" && utils.GetValueAtCords(matrix, x+1, y+1) == "S" {
-				if utils.GetValueAtCords(matrix, x-1, y-1) == "M" && utils.GetValueAtCords(matrix, x+1, y-1) == "M" {
+			if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 1, Y: cords.Y + 1}) == "S" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 1, Y: cords.Y + 1}) == "S" {
+				if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 1, Y: cords.Y - 1}) == "M" &&
+					utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 1, Y: cords.Y - 1}) == "M" {
 					count++
 				}
 			}
 			// S.M
 			// .A.
 			// S.M
-			if utils.GetValueAtCords(matrix, x-1, y+1) == "S" && utils.GetValueAtCords(matrix, x+1, y+1) == "M" {
-				if utils.GetValueAtCords(matrix, x-1, y-1) == "S" && utils.GetValueAtCords(matrix, x+1, y-1) == "M" {
+			if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 1, Y: cords.Y + 1}) == "S" &&
+				utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 1, Y: cords.Y + 1}) == "M" {
+				if utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X - 1, Y: cords.Y - 1}) == "S" &&
+					utils.GetValueAtCords(matrix, utils.Coordinates{X: cords.X + 1, Y: cords.Y - 1}) == "M" {
 					count++
 				}
 			}

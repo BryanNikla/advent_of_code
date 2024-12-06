@@ -7,41 +7,31 @@ import (
 )
 
 func Day3() utils.Solution {
-	input := utils.GetInputContent(2023, 3)
-	// test2 := utilities.GetTestContent(2023, 3, 2)
+	input, testInput1, _ := utils.GetAllInputs(2023, 3)
 	return utils.Solution{
 		Day:   3,
 		Part1: part1(input),
-		Test1: part1(utils.GetTestContent(2023, 3, 1)) == 4361,
+		Test1: part1(testInput1) == 4361,
 	}
 }
 
 func part1(input string) int {
-	var lines = utils.GetLines(input)
-
-	//// make an empty matrix
-	//var matrix [][]string
-	//
-	//for _, line := range lines {
-	//	matrix = append(matrix, strings.Split(line, ""))
-	//}
-
-	matrix := utils.LinesToCharacterMatrix(lines)
+	matrix := utils.LinesToCharacterMatrix(utils.GetLines(input))
 
 	var parts []int
 
 	var currentNumberString string
 	var currentNumberIsPart bool
 
-	utils.EachMatrix(matrix, func(char string, x int, y int, matrix [][]string) {
+	utils.EachMatrix(matrix, func(char string, coordinates utils.Coordinates, matrix [][]string) {
 
 		if isDigit(char) {
 			currentNumberString = currentNumberString + char
 
 			// Only bother with this if we haven't already determined this is a part
 			if !currentNumberIsPart {
-				utils.EachSurroundingInMatrix(matrix, x, y, func(c string, xx int, yy int, m [][]string) {
-					if isSymbol(c) {
+				utils.EachSurroundingInMatrix(matrix, coordinates, func(char string, _ utils.Coordinates, _ [][]string) {
+					if isSymbol(char) {
 						currentNumberIsPart = true
 					}
 				})
@@ -49,7 +39,7 @@ func part1(input string) int {
 		}
 
 		// If we're at the end of the number, or the end of the row add to parts if it's a part
-		if utils.IsLastColOfMatrix(matrix, x, y) || !isDigit(char) {
+		if utils.IsLastColOfMatrix(matrix, coordinates) || !isDigit(char) {
 			if currentNumberIsPart {
 				i, _ := strconv.Atoi(currentNumberString)
 				parts = append(parts, i)
