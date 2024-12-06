@@ -45,16 +45,13 @@ func userInput(day *int, year *int) {
 }
 
 func solve(day int, year int) {
+	colorCycle := utils.ColorCycle{}
 	for _, solution := range getSolutions(year, day) {
-		printFancyBox(fmt.Sprintf("Day %d | Part 1", solution.Day), []string{
-			formatTestOutcome("Test", solution.Test1),
-			formatAnswer("Solution", solution.Part1),
-		}, "blue")
-
-		printFancyBox(fmt.Sprintf("Day %d | Part 2", solution.Day), []string{
-			formatTestOutcome("Test", solution.Test2),
-			formatAnswer("Solution", solution.Part2),
-		}, "magenta")
+		printFancy(fmt.Sprintf("Day %d", solution.Day), []string{
+			fmt.Sprintf("https://adventofcode.com/%d/day/%d", year, solution.Day),
+			formatTestOutcome("Part 1", solution.Test1),
+			formatTestOutcome("Part 2", solution.Test2),
+		}, colorCycle.NextColor())
 	}
 }
 
@@ -96,8 +93,7 @@ func getSolutions(year int, day int) []utils.Solution {
 				year2024day03.Solve(),
 				year2024day04.Solve(),
 				year2024day05.Solve(),
-				//year2024day06.Solve(),
-				{6, "---", "solution too slow for 'all'", true, true},
+				year2024day06.Solve(),
 			}
 		}
 	default:
@@ -133,7 +129,7 @@ func printHolidayHr() {
 	fmt.Print("\n")
 }
 
-func printFancyBox(label string, contents []string, color string) {
+func printFancy(label string, contents []string, color string) {
 	var width = 50 // minimum width of box
 	for _, line := range contents {
 		var length = utf8.RuneCountInString(line) + 5
@@ -148,30 +144,10 @@ func printFancyBox(label string, contents []string, color string) {
 	for i := 0; i < labelDashCount; i++ {
 		labelDashes += "-"
 	}
-	fmt.Println(utils.ColorText(color, "\n|"+labelDashes+" "+label+" "+labelDashes+"|"))
+	fmt.Println(utils.ColorText(color, "\n|"), utils.ColorText(color, label))
 
 	// Print all contents
 	for _, line := range contents {
-		var whitespaceCount = width - utf8.RuneCountInString(line) - 2 - 3
-
-		// TODO: Emojis do weird things for character counts/lengths when  printing. This is a dumb workaround for now.. solve one day maybe.
-		var emojiDiff = len(line) - utf8.RuneCountInString(line)
-		if emojiDiff > 0 {
-			whitespaceCount = whitespaceCount - emojiDiff + 1
-		}
-
-		var whitespace string
-		for i := 0; i < whitespaceCount; i++ {
-			whitespace += " "
-		}
-		fmt.Println(utils.ColorText(color, "|"), line, whitespace, utils.ColorText(color, "|"))
+		fmt.Println(utils.ColorText(color, "|"), utils.ColorText(color, line))
 	}
-
-	// Print bottom of box
-	var bottomDashCount = width - 2
-	var bottomDashes string
-	for i := 0; i < bottomDashCount; i++ {
-		bottomDashes += "-"
-	}
-	fmt.Println(utils.ColorText(color, "|"+bottomDashes+"|"))
 }

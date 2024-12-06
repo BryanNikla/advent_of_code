@@ -112,13 +112,13 @@ func rotateGuard(guard *Guard) {
 func getNextPosition(guard *Guard) utils.Coordinates {
 	switch guard.facing {
 	case "N":
-		return utils.Coordinates{X: guard.coordinates.X, Y: guard.coordinates.Y + 1}
+		return guard.coordinates.MoveNorth(1)
 	case "E":
-		return utils.Coordinates{X: guard.coordinates.X + 1, Y: guard.coordinates.Y}
+		return guard.coordinates.MoveEast(1)
 	case "S":
-		return utils.Coordinates{X: guard.coordinates.X, Y: guard.coordinates.Y - 1}
+		return guard.coordinates.MoveSouth(1)
 	case "W":
-		return utils.Coordinates{X: guard.coordinates.X - 1, Y: guard.coordinates.Y}
+		return guard.coordinates.MoveWest(1)
 	default:
 		panic("invalid guard position")
 	}

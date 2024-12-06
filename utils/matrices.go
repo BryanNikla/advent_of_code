@@ -11,6 +11,31 @@ type Coordinates struct {
 	Y int
 }
 
+func (c Coordinates) MoveEast(distance int) Coordinates {
+	return Coordinates{X: c.X + distance, Y: c.Y}
+}
+func (c Coordinates) MoveNorth(distance int) Coordinates {
+	return Coordinates{X: c.X, Y: c.Y + distance}
+}
+func (c Coordinates) MoveWest(distance int) Coordinates {
+	return Coordinates{X: c.X - distance, Y: c.Y}
+}
+func (c Coordinates) MoveSouth(distance int) Coordinates {
+	return Coordinates{X: c.X, Y: c.Y - distance}
+}
+func (c Coordinates) MoveNorthEast(distance int) Coordinates {
+	return Coordinates{X: c.X + distance, Y: c.Y + distance}
+}
+func (c Coordinates) MoveSouthEast(distance int) Coordinates {
+	return Coordinates{X: c.X + distance, Y: c.Y - distance}
+}
+func (c Coordinates) MoveSouthWest(distance int) Coordinates {
+	return Coordinates{X: c.X - distance, Y: c.Y - distance}
+}
+func (c Coordinates) MoveNorthWest(distance int) Coordinates {
+	return Coordinates{X: c.X - distance, Y: c.Y + distance}
+}
+
 func VisualizeMatrix[V any, M [][]V](matrix M, colored []Coordinates) {
 	fmt.Print("\n")
 	for yy, row := range matrix {

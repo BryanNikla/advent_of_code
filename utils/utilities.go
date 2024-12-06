@@ -47,6 +47,32 @@ func ReverseString(str string) string {
 	return string(runes)
 }
 
+type ColorCycle struct {
+	Color string
+}
+
+func (c *ColorCycle) NextColor() string {
+	switch c.Color {
+	case "green":
+		c.Color = "red"
+	case "red":
+		c.Color = "yellow"
+	case "yellow":
+		c.Color = "blue"
+	case "blue":
+		c.Color = "magenta"
+	case "magenta":
+		c.Color = "cyan"
+	case "cyan":
+		c.Color = "white"
+	case "white":
+		fallthrough
+	default:
+		c.Color = "green"
+	}
+	return c.Color
+}
+
 func ColorText[V any](color string, text V) string {
 	asString := fmt.Sprintf("%v", text)
 	var Reset = "\033[0m"
@@ -56,7 +82,6 @@ func ColorText[V any](color string, text V) string {
 	var Blue = "\033[34m"
 	var Magenta = "\033[35m"
 	var Cyan = "\033[36m"
-	var Gray = "\033[37m"
 	var White = "\033[97m"
 	switch color {
 	case "red":
@@ -71,8 +96,6 @@ func ColorText[V any](color string, text V) string {
 		return Magenta + asString + Reset
 	case "cyan":
 		return Cyan + asString + Reset
-	case "gray":
-		return Gray + asString + Reset
 	case "white":
 		return White + asString + Reset
 	default:
