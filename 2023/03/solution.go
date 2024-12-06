@@ -2,7 +2,6 @@ package year2023
 
 import (
 	"strconv"
-	"strings"
 
 	"advent_of_code/utils"
 )
@@ -13,7 +12,6 @@ func Day3() utils.Solution {
 	return utils.Solution{
 		Day:   3,
 		Part1: part1(input),
-		Part2: 0,
 		Test1: part1(utils.GetTestContent(2023, 3, 1)) == 4361,
 	}
 }
@@ -21,17 +19,19 @@ func Day3() utils.Solution {
 func part1(input string) int {
 	var lines = utils.GetLines(input)
 
-	// make an empty matrix
-	var matrix [][]string
+	//// make an empty matrix
+	//var matrix [][]string
+	//
+	//for _, line := range lines {
+	//	matrix = append(matrix, strings.Split(line, ""))
+	//}
 
-	for _, line := range lines {
-		matrix = append(matrix, strings.Split(line, ""))
-	}
+	matrix := utils.LinesToCharacterMatrix(lines)
 
 	var parts []int
 
-	var currentNumberString string = ""
-	var currentNumberIsPart bool = false
+	var currentNumberString string
+	var currentNumberIsPart bool
 
 	utils.EachMatrix(matrix, func(char string, x int, y int, matrix [][]string) {
 

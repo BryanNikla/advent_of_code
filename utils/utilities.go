@@ -73,7 +73,8 @@ func AbsoluteValue(x int) int {
 	return x
 }
 
-func ColorText(color string, text string) string {
+func ColorText[V any](color string, text V) string {
+	asString := fmt.Sprintf("%v", text)
 	var Reset = "\033[0m"
 	var Red = "\033[31m"
 	var Green = "\033[32m"
@@ -85,23 +86,23 @@ func ColorText(color string, text string) string {
 	var White = "\033[97m"
 	switch color {
 	case "red":
-		return Red + text + Reset
+		return Red + asString + Reset
 	case "green":
-		return Green + text + Reset
+		return Green + asString + Reset
 	case "yellow":
-		return Yellow + text + Reset
+		return Yellow + asString + Reset
 	case "blue":
-		return Blue + text + Reset
+		return Blue + asString + Reset
 	case "magenta":
-		return Magenta + text + Reset
+		return Magenta + asString + Reset
 	case "cyan":
-		return Cyan + text + Reset
+		return Cyan + asString + Reset
 	case "gray":
-		return Gray + text + Reset
+		return Gray + asString + Reset
 	case "white":
-		return White + text + Reset
+		return White + asString + Reset
 	default:
-		return text
+		return asString
 	}
 }
 
@@ -145,6 +146,34 @@ func SumValuesInSlice[V int | int8 | int16 | int32 | int64 | float32 | float64, 
 	return sum
 }
 
+func VisualizeMatrix[V any, M [][]V](matrix M, x int, y int) {
+	fmt.Print("\n")
+	for yy, row := range matrix {
+		for xx, element := range row {
+			if yy == y && xx == x {
+				fmt.Print(ColorText("red", element))
+			} else {
+				fmt.Print(element)
+			}
+		}
+		fmt.Print("\n")
+	}
+	fmt.Print("\n")
+}
+
+func CloneMatrix[V any](matrix [][]V) [][]V {
+	newMatrix := make([][]V, len(matrix))
+	for i := range matrix {
+		newMatrix[i] = make([]V, len(matrix[i]))
+		copy(newMatrix[i], matrix[i])
+	}
+	return newMatrix
+}
+
+func SetAtMatrixPosition[V any, M [][]V](matrix M, x int, y int, value V) {
+	matrix[y][x] = value
+}
+
 func CallAtCords[V any, M [][]V](matrix M, x int, y int, fn func(V, int, int, M)) {
 	if x < 0 || y < 0 {
 		return
@@ -159,11 +188,10 @@ func CallAtCords[V any, M [][]V](matrix M, x int, y int, fn func(V, int, int, M)
 	fn(matrix[x][y], x, y, matrix)
 }
 
-func EachMatrix[Val any, M [][]Val](matrix M, fn func(Val, int, int, M)) {
-	for r, row := range matrix {
-		for c := range row {
-			// TODO: Can possibly replace this matrix[r][c] with a call to GetValueAtCords()
-			fn(matrix[r][c], r, c, matrix)
+func EachMatrix[V any, M [][]V](matrix M, fn func(V, int, int, M)) {
+	for y, row := range matrix {
+		for x := range row {
+			fn(GetValueAtCords(matrix, x, y), x, y, matrix)
 		}
 	}
 }
@@ -192,14 +220,19 @@ func GetValueAtCords[V any, M [][]V](matrix M, x int, y int) V {
 		var defaultValue V
 		return defaultValue
 	}()
-	return matrix[x][y]
+	return matrix[y][x]
 }
 
 // LinesToCharacterMatrix - Return a matrix of individual string characters from a slice of strings (lines)
 func LinesToCharacterMatrix(lines []string) [][]string {
 	var matrix [][]string
-	for _, line := range lines {
-		matrix = append(matrix, strings.Split(line, ""))
+	//for _, line := range lines {
+	//	matrix = append(matrix, strings.Split(line, ""))
+	//}
+	// Do this in reverse so that if we ever 'visualize' this it makes sense // TODO: Make more sense of this
+	for i := len(lines) - 1; i >= 0; i-- {
+		matrix = append(matrix, strings.Split(lines[i], ""))
 	}
+
 	return matrix
 }
