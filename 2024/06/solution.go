@@ -1,8 +1,6 @@
 package year2024day06
 
 import (
-	"errors"
-
 	"advent_of_code/utils"
 )
 
@@ -16,55 +14,53 @@ func Solve() utils.Solution {
 }
 
 func part1(input string) int {
-	matrix := utils.LinesToCharacterMatrix(utils.GetLines(input))
-	guard := Guard{getStartingPositionOfGuard(matrix), "N"}
+	laboratory := utils.LinesToCharacterMatrix(utils.GetLines(input))
+	guard := Guard{getStartingPositionOfGuard(laboratory), "N"}
 
+	// Create map of every coordinate guard has been
 	visited := make(map[utils.Coordinates]int)
-	addToVisitedMap := func(coordinates utils.Coordinates) {
-		visited[coordinates] = visited[coordinates] + 1
-	}
 
-	addToVisitedMap(guard.coordinates)
-	utils.SetAtMatrixPosition(matrix, guard.coordinates, FLOOR)
+	// Add initial guard position to visited map
+	visited[guard.coordinates] = visited[guard.coordinates] + 1
 
-	var exited bool
-	var iterations int
-	for exited != true {
+	utils.SetAtMatrixPosition(laboratory, guard.coordinates, FLOOR)
+
+	if err := utils.Forever(20000, func(exit func()) {
 		coordinates := getNextPosition(&guard)
-		switch utils.GetValueAtCords(matrix, coordinates) {
+		switch utils.GetValueAtCords(laboratory, coordinates) {
 		case EXIT:
-			exited = true
+			exit()
 		case OBSTRUCTION:
 			rotateGuard(&guard)
 		case FLOOR:
-			addToVisitedMap(coordinates)
+			visited[coordinates] = visited[coordinates] + 1
 			guard.coordinates = coordinates
 		}
-		if iterations++; iterations > 20000 {
-			panic("something is very wrong: stuck")
-		}
+	}); err != nil {
+		panic(err)
 	}
 
 	return len(visited)
 }
 
 func part2(input string) int {
-	matrix := utils.LinesToCharacterMatrix(utils.GetLines(input))
-	guard := Guard{getStartingPositionOfGuard(matrix), "N"}
+	laboratory := utils.LinesToCharacterMatrix(utils.GetLines(input))
+	guard := Guard{getStartingPositionOfGuard(laboratory), "N"}
 
 	// hold positions to test, with value being true/false if it's a successful obstruction option
 	positions := make(map[utils.Coordinates]bool)
-	utils.EachMatrix(matrix, func(content string, cords utils.Coordinates, _ [][]string) {
+	utils.EachMatrix(laboratory, func(content string, cords utils.Coordinates, _ [][]string) {
 		if content == FLOOR {
 			positions[cords] = true
 		}
 	})
 
-	utils.SetAtMatrixPosition(matrix, guard.coordinates, VISITED)
+	// Replace guard's starting position with traversable floor
+	utils.SetAtMatrixPosition(laboratory, guard.coordinates, FLOOR)
 
 	var count int
 	for coordinates, _ := range positions {
-		m := utils.CloneMatrix(matrix)
+		m := utils.CloneMatrix(laboratory)
 		g := Guard{coordinates: utils.Coordinates{X: guard.coordinates.X, Y: guard.coordinates.Y}, facing: guard.facing}
 		utils.SetAtMatrixPosition(m, coordinates, OBSTRUCTION)
 		if looping := simulateGuard(&g, m); looping != nil {
@@ -74,37 +70,29 @@ func part2(input string) int {
 	return count
 }
 
+type Guard struct {
+	coordinates utils.Coordinates
+	facing      string
+}
+
 var EXIT = ""
 var FLOOR = "."
 var VISITED = "@"
 var OBSTRUCTION = "#"
 
-// simulateGuard - Simulate the guard walking the matrix. Will return error if guard is looping
-func simulateGuard(guard *Guard, matrix [][]string) error {
-	var exited bool
-	var iterations int
-	for exited != true {
-		iterations++
-		// TODO: Brute forcing this solution by simulating.. this is NOT ideal (but it worked)
-		// TODO: Maybe come back and revisit and solve a better way one day
-		if iterations > 20000 {
-			return errors.New("guard is looping")
-		}
-		utils.SetAtMatrixPosition(matrix, guard.coordinates, VISITED)
+// simulateGuard - Simulate the guard walking the laboratory.  Returns error if guard stuck in a loop
+func simulateGuard(guard *Guard, lab [][]string) error {
+	return utils.Forever(20000, func(exit func()) {
 		coordinates := getNextPosition(guard)
-		switch utils.GetValueAtCords(matrix, coordinates) {
+		switch utils.GetValueAtCords(lab, coordinates) {
 		case EXIT:
-			exited = true
+			exit()
 		case OBSTRUCTION:
 			rotateGuard(guard)
-		case VISITED:
-			fallthrough
 		case FLOOR:
-			utils.SetAtMatrixPosition(matrix, coordinates, VISITED)
 			guard.coordinates = coordinates
 		}
-	}
-	return nil
+	})
 }
 
 // rotateGuard - Rotates guard clockwise from its current facing direction
@@ -136,17 +124,12 @@ func getNextPosition(guard *Guard) utils.Coordinates {
 	}
 }
 
-func getStartingPositionOfGuard(matrix [][]string) utils.Coordinates {
+func getStartingPositionOfGuard(laboratory [][]string) utils.Coordinates {
 	var coordinates = utils.Coordinates{}
-	utils.EachMatrix(matrix, func(space string, cords utils.Coordinates, _ [][]string) {
+	utils.EachMatrix(laboratory, func(space string, cords utils.Coordinates, _ [][]string) {
 		if space == "^" {
 			coordinates = cords
 		}
 	})
 	return coordinates
-}
-
-type Guard struct {
-	coordinates utils.Coordinates
-	facing      string
 }

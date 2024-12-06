@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -98,4 +99,20 @@ func ConsoleSize() (int, int) {
 		log.Fatal(err)
 	}
 	return height, width
+}
+
+// Forever - Loop forever until a max iteration count is reached
+func Forever(max int, fn func(f func())) error {
+	var quit bool
+	var iterations int
+	for quit != true {
+		iterations++
+		if iterations > max {
+			return errors.New("maximum iterations")
+		}
+		fn(func() {
+			quit = true
+		})
+	}
+	return nil
 }
