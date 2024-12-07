@@ -139,3 +139,30 @@ func Forever(max int, fn func(f func())) error {
 	}
 	return nil
 }
+
+func AllPossibleCombinations[V any](length int, items []V) [][]V {
+	// Initialize a slice to store all combinations
+	var allCombinations [][]V
+
+	// Helper function to generate combinations recursively
+	var recursiveFn func(curr []V)
+	recursiveFn = func(curr []V) {
+		// If we have the desired number of combinations, add to allCombinations
+		if len(curr) == length {
+			allCombinations = append(allCombinations, append([]V{}, curr...))
+			return
+		}
+
+		// Recursively explore all possible operators for the next position
+		for _, item := range items {
+			curr = append(curr, item)
+			recursiveFn(curr)
+			curr = curr[:len(curr)-1] // Backtrack to the previous state
+		}
+	}
+
+	// Start the backtracking process with an empty initial combination
+	recursiveFn([]V{})
+
+	return allCombinations
+}
