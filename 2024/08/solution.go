@@ -53,10 +53,6 @@ func part2(input string) int {
 					var checkRecursively func(c1 *utils.Coordinates, c2 *utils.Coordinates)
 					checkRecursively = func(c1 *utils.Coordinates, c2 *utils.Coordinates) {
 						possibleAntinode := findThirdCoordinate(c1, c2)
-						missing := utils.Coordinates{X: 4, Y: 1}
-						if possibleAntinode == missing {
-							fmt.Println("im here?")
-						}
 						if utils.GetValueAtCords(frequencyMap, possibleAntinode) != "" {
 							antinodes[possibleAntinode] = true
 							checkRecursively(c2, &possibleAntinode)
