@@ -1,8 +1,6 @@
 package year2024day08
 
 import (
-	"fmt"
-
 	"advent_of_code/utils"
 )
 
@@ -63,7 +61,6 @@ func part2(input string) int {
 			})
 		}
 	})
-	fmt.Println("Number of Antinodes:", len(antinodes))
 	return len(antinodes)
 }
 
