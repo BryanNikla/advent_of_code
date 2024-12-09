@@ -32,3 +32,34 @@ func SumValuesInSlice[V int | int8 | int16 | int32 | int64 | float32 | float64, 
 	}
 	return sum
 }
+
+// ReplaceValues - Replace all instances of old value in slice with a new value
+func ReplaceValues[V string | int](slice []V, old V, new V) []V {
+	for i := range slice {
+		if slice[i] == old {
+			slice[i] = new
+		}
+	}
+	return slice
+}
+
+// FindFirstSpanWithLength - Find the first span of indexes of a given slice that range a specified length for a target value
+func FindFirstSpanWithLength[V string | int](nums []V, target V, length int) (int, int) {
+	start := -1
+	count := 0
+	for i := 0; i < len(nums); i++ {
+		if nums[i] == target {
+			if count == 0 {
+				start = i
+			}
+			count++
+			if count == length {
+				return start, i // Found a span with the given length
+			}
+		} else {
+			count = 0 // Reset count if the span is broken
+			start = -1
+		}
+	}
+	return -1, -1 // No span found
+}
