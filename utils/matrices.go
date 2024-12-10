@@ -100,6 +100,13 @@ func EachSurroundingInMatrix[Val any, M [][]Val](matrix M, cords Coordinates, fn
 	CallAtCords(matrix, Coordinates{X: cords.X + 1, Y: cords.Y - 1}, fn)
 }
 
+func EachSurroundingCardinalInMatrix[Val any, M [][]Val](matrix M, cords Coordinates, fn func(Val, Coordinates, M)) {
+	CallAtCords(matrix, cords.MoveNorth(1), fn)
+	CallAtCords(matrix, cords.MoveSouth(1), fn)
+	CallAtCords(matrix, cords.MoveEast(1), fn)
+	CallAtCords(matrix, cords.MoveWest(1), fn)
+}
+
 func IsLastColOfMatrix[V any, M [][]V](matrix M, cords Coordinates) bool {
 	return cords.Y == len(matrix[cords.X])-1
 }
