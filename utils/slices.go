@@ -43,23 +43,25 @@ func ReplaceValues[V string | int](slice []V, old V, new V) []V {
 	return slice
 }
 
-// FindFirstSpanWithLength - Find the first span of indexes of a given slice that range a specified length for a target value
-func FindFirstSpanWithLength[V string | int](nums []V, target V, length int) (int, int) {
-	start := -1
-	count := 0
-	for i := 0; i < len(nums); i++ {
-		if nums[i] == target {
+// FindFirstSpanWithLength - Find the first span of indexes of slice that range a specified length for a target value
+func FindFirstSpanWithLength[V string | int](slice []V, target V, length int) (int, int) {
+	var startIndex int
+	var count int
+	for i := 0; i < len(slice); i++ {
+		if slice[i] == target {
 			if count == 0 {
-				start = i
+				startIndex = i
 			}
 			count++
+			// Found a span with the required length
 			if count == length {
-				return start, i // Found a span with the given length
+				return startIndex, i
 			}
 		} else {
-			count = 0 // Reset count if the span is broken
-			start = -1
+			// Span broken, reset our counter
+			count = 0
 		}
 	}
-	return -1, -1 // No span found
+	// No span found
+	return -1, -1
 }

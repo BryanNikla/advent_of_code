@@ -17,9 +17,7 @@ func Solve() utils.Solution {
 }
 
 func part1(input string) int {
-	digits := strings.Split(input, "")
-	disk := prepDisk(digits)
-
+	disk := prepDisk(strings.Split(input, ""))
 	for i := len(disk) - 1; i >= 0; i-- {
 		if disk[i] != -1 {
 			swapIdx := slices.Index(disk, FREE_SPACE)
@@ -28,20 +26,17 @@ func part1(input string) int {
 			}
 		}
 	}
-
-	finalDisk := make([]int, 0, len(disk))
+	cleanDisk := make([]int, 0, len(disk))
 	for _, v := range disk {
 		if v != FREE_SPACE {
-			finalDisk = append(finalDisk, v)
+			cleanDisk = append(cleanDisk, v)
 		}
 	}
-
-	return calculateChecksum(finalDisk)
+	return calculateChecksum(cleanDisk)
 }
 
 func part2(input string) int {
-	digits := strings.Split(input, "")
-	disk := prepDisk(digits)
+	disk := prepDisk(strings.Split(input, ""))
 
 	var currentID = -10 // -10 is just an impossible value used as a reset
 	var size int
@@ -62,6 +57,7 @@ func part2(input string) int {
 				size = 0
 				currentID = -10
 			}
+			// If this value is not FREE_SPACE, set it as our current w/ size = 1
 			if disk[i] != FREE_SPACE {
 				currentID = disk[i]
 				size = 1
