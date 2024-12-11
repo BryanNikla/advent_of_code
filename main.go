@@ -20,6 +20,7 @@ import (
 	year2024day08 "advent_of_code/2024/08"
 	year2024day09 "advent_of_code/2024/09"
 	year2024day10 "advent_of_code/2024/10"
+	year2024day11 "advent_of_code/2024/11"
 	"advent_of_code/utils"
 )
 
@@ -98,6 +99,8 @@ func getSolutions(year int, day int) []utils.Solution {
 			return []utils.Solution{year2024day09.Solve()}
 		case 10:
 			return []utils.Solution{year2024day10.Solve()}
+		case 11:
+			return []utils.Solution{year2024day11.Solve()}
 		default:
 			return []utils.Solution{
 				year2024day01.Solve(),
@@ -110,6 +113,7 @@ func getSolutions(year int, day int) []utils.Solution {
 				year2024day08.Solve(),
 				year2024day09.Solve(),
 				year2024day10.Solve(),
+				year2024day11.Solve(),
 			}
 		}
 	default:
