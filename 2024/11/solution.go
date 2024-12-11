@@ -1,7 +1,6 @@
 package year2024day11
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -13,45 +12,69 @@ func Solve() utils.Solution {
 	return utils.Solution{
 		Day:   11,
 		Test1: part1(input1) == 55312,
-		Test2: part2(input2) == -1,
+		Test2: part2(input2) == 65601038650482,
 	}
 }
 
-func splitStringHalf(s string) (string, string) {
-	mid := len(s) / 2
-	return s[:mid], s[mid:]
+// part1 - Part 1 of this puzzle is to get the total number of stones after 25 "blinks"
+func part1(input string) int {
+	stones := createStoneMap(input)
+	for range 25 {
+		stones = blink(stones)
+	}
+	return countStones(stones)
 }
 
-func blink(stones []string) []string {
-	newStones := make([]string, 0, len(stones))
-	for _, stone := range stones {
-		if stone == "0" {
-			newStones = append(newStones, "1")
-		} else if len(stone)%2 == 0 {
-			x, y := splitStringHalf(stone)
-			newStones = append(newStones,
-				strconv.Itoa(utils.StringToInteger(x)),
-				strconv.Itoa(utils.StringToInteger(y)),
-			)
+// part2 - Same as part 1, but requiring 75 "blinks"
+func part2(input string) int {
+	stones := createStoneMap(input)
+	for range 75 {
+		stones = blink(stones)
+	}
+	return countStones(stones)
+}
+
+// blink - Simulate a single "blink" for a map of stones
+// Returns a new map of stones with updated counts for each type of stone
+func blink(stones map[int]int) map[int]int {
+	newStones := make(map[int]int)
+	for stone, count := range stones {
+		if stone == 0 {
+			newStones[1] += count
+		} else if len(strconv.Itoa(stone))%2 == 0 {
+			left, right := splitStone(stone)
+			newStones[left] += count
+			newStones[right] += count
 		} else {
-			newStones = append(newStones,
-				strconv.Itoa(utils.StringToInteger(stone)*2024),
-			)
+			newStones[stone*2024] += count
 		}
 	}
 	return newStones
 }
 
-func part1(input string) int {
-	stones := strings.Split(input, " ")
-	for i := 0; i < 25; i++ {
-		stones = blink(stones)
-	}
-	fmt.Println("STONES:", len(stones))
-	return len(stones)
+// splitStone - Given a stone's number, split it into two equally sized parts when interpretted as a string
+// Returns two new numbers recast as an integer (removing any leading zeros potentially)
+func splitStone(stone int) (int, int) {
+	str := strconv.Itoa(stone)
+	half := len(str) / 2
+	l, r := str[:half], str[half:]
+	return utils.StringToInteger(l), utils.StringToInteger(r)
 }
 
-func part2(input string) int {
+// createStoneMap - Create a map of stone's with numbers & the total number of similar stones that exist
+func createStoneMap(input string) map[int]int {
+	stones := make(map[int]int)
+	for _, s := range strings.Split(input, " ") {
+		stones[utils.StringToInteger(s)] += 1
+	}
+	return stones
+}
 
-	return 0
+// countStones - Sum up the total number of stones across all stones in a stone map
+func countStones(stones map[int]int) int {
+	count := 0
+	for _, v := range stones {
+		count += v
+	}
+	return count
 }

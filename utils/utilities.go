@@ -32,6 +32,10 @@ func GetLines(input string) []string {
 
 // StringToInteger - Simpler string to integer that handles error (really just used to clean up solution logic)
 func StringToInteger(input string) int {
+	// Handle empty strings gracefully by returning 0
+	if input == "" {
+		return 0
+	}
 	integer, err := strconv.Atoi(input)
 	if err != nil {
 		panic(err)
