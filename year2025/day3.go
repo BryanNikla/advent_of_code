@@ -2,6 +2,8 @@ package year2025
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"advent_of_code/utils"
 )
@@ -22,15 +24,29 @@ func day3part1(input string) int {
 		batteries := getBatteriesFromBank(bank)
 		first, firstIndex := findLargestBattery(batteries[:len(batteries)-1])
 		second, _ := findLargestBattery(batteries[firstIndex+1:])
-		combined := fmt.Sprintf("%d%d", first, second)
-		totalOutput += utils.StringToInteger(combined)
+		concatenated := fmt.Sprintf("%d%d", first, second)
+		totalOutput += utils.StringToInteger(concatenated)
 	}
 	return totalOutput
 }
 
 func day3part2(input string) int {
-	// Part 2 is something...... TODO
-	return 0
+	totalOutput := 0
+	batteryBanks := utils.GetLines(input)
+	for _, bank := range batteryBanks {
+		allBatteries := getBatteriesFromBank(bank)
+		totalLength := len(allBatteries)
+		batteriesFound := make([]string, 0, 12)
+		var battery, lastIdx, currIdx int
+		for i := 11; i > -1; i-- {
+			battery, currIdx = findLargestBattery(allBatteries[lastIdx : totalLength-i])
+			lastIdx += currIdx + 1
+			batteriesFound = append(batteriesFound, strconv.Itoa(battery))
+		}
+		concatenated := strings.Join(batteriesFound, "")
+		totalOutput += utils.StringToInteger(concatenated)
+	}
+	return totalOutput
 }
 
 func getBatteriesFromBank(bank string) []int {
@@ -42,6 +58,7 @@ func getBatteriesFromBank(bank string) []int {
 	return batteries
 }
 
+// Find the largest battery for a given slice of batteries, returning its value & index
 func findLargestBattery(batteries []int) (int, int) {
 	maxVal := batteries[0]
 	maxIndex := 0
