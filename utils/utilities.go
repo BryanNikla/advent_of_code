@@ -55,6 +55,10 @@ type ColorCycle struct {
 	Color string
 }
 
+func NewColorCycle() *ColorCycle {
+	return &ColorCycle{Color: "green"}
+}
+
 func (c *ColorCycle) NextColor() string {
 	switch c.Color {
 	case "green":
@@ -177,4 +181,10 @@ func GetRange(start int, end int) []int {
 		result = append(result, i)
 	}
 	return result
+}
+
+func ForRange(start int, end int, fn func(i int)) {
+	for i := start; i <= end; i++ {
+		fn(i)
+	}
 }

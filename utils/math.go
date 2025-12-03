@@ -7,3 +7,7 @@ func AbsoluteValue(x int) int {
 	}
 	return x
 }
+
+func PositiveMod(val int, n int) int {
+	return ((val % n) + n) % n
+}
