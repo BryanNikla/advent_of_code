@@ -17,6 +17,8 @@ func SolutionDay3() utils.Solution {
 	}
 }
 
+type Battery int
+
 func day3part1(input string) int {
 	totalOutput := 0
 	batteryBanks := utils.GetLines(input)
@@ -37,11 +39,12 @@ func day3part2(input string) int {
 		allBatteries := getBatteriesFromBank(bank)
 		totalLength := len(allBatteries)
 		batteriesFound := make([]string, 0, 12)
-		var battery, lastIdx, currIdx int
+		var battery Battery
+		var lastIdx, currIdx int
 		for i := 11; i > -1; i-- {
 			battery, currIdx = findLargestBattery(allBatteries[lastIdx : totalLength-i])
 			lastIdx += currIdx + 1
-			batteriesFound = append(batteriesFound, strconv.Itoa(battery))
+			batteriesFound = append(batteriesFound, strconv.Itoa(int(battery)))
 		}
 		concatenated := strings.Join(batteriesFound, "")
 		totalOutput += utils.StringToInteger(concatenated)
@@ -49,17 +52,17 @@ func day3part2(input string) int {
 	return totalOutput
 }
 
-func getBatteriesFromBank(bank string) []int {
-	var batteries []int
+func getBatteriesFromBank(bank string) []Battery {
+	var batteries []Battery
 	for _, char := range bank {
-		battery := utils.StringToInteger(string(char))
+		battery := Battery(utils.StringToInteger(string(char)))
 		batteries = append(batteries, battery)
 	}
 	return batteries
 }
 
 // Find the largest battery for a given slice of batteries, returning its value & index
-func findLargestBattery(batteries []int) (int, int) {
+func findLargestBattery(batteries []Battery) (Battery, int) {
 	maxVal := batteries[0]
 	maxIndex := 0
 	for i, v := range batteries {
