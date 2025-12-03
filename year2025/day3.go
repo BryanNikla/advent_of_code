@@ -1,10 +1,6 @@
 package year2025
 
 import (
-	"fmt"
-	"strconv"
-	"strings"
-
 	"advent_of_code/utils"
 )
 
@@ -17,59 +13,52 @@ func SolutionDay3() utils.Solution {
 	}
 }
 
-type Battery int
-
 func day3part1(input string) int {
-	totalOutput := 0
-	batteryBanks := utils.GetLines(input)
-	for _, bank := range batteryBanks {
-		batteries := getBatteriesFromBank(bank)
-		first, firstIndex := findLargestBattery(batteries[:len(batteries)-1])
-		second, _ := findLargestBattery(batteries[firstIndex+1:])
-		concatenated := fmt.Sprintf("%d%d", first, second)
-		totalOutput += utils.StringToInteger(concatenated)
+	output := 0
+	for _, bank := range utils.GetLines(input) {
+		batteries := parseBatteries(bank)
+		first, firstIdx := findLargestBattery(batteries[:len(batteries)-1])
+		second, _ := findLargestBattery(batteries[firstIdx+1:])
+		output += (first * 10) + second
 	}
-	return totalOutput
+	return output
 }
 
 func day3part2(input string) int {
-	totalOutput := 0
-	batteryBanks := utils.GetLines(input)
-	for _, bank := range batteryBanks {
-		allBatteries := getBatteriesFromBank(bank)
-		totalLength := len(allBatteries)
-		batteriesFound := make([]string, 0, 12)
-		var battery Battery
-		var lastIdx, currIdx int
-		for i := 11; i > -1; i-- {
-			battery, currIdx = findLargestBattery(allBatteries[lastIdx : totalLength-i])
-			lastIdx += currIdx + 1
-			batteriesFound = append(batteriesFound, strconv.Itoa(int(battery)))
+	output := 0
+	for _, bank := range utils.GetLines(input) {
+		batteries := parseBatteries(bank)
+		batteryCount := len(batteries)
+		bankValue := 0
+		searchStartIdx := 0
+		for remaining := 11; remaining >= 0; remaining-- {
+			battery, relativeIdx := findLargestBattery(batteries[searchStartIdx : batteryCount-remaining])
+			searchStartIdx += relativeIdx + 1
+			bankValue = (bankValue * 10) + battery
 		}
-		concatenated := strings.Join(batteriesFound, "")
-		totalOutput += utils.StringToInteger(concatenated)
+		output += bankValue
 	}
-	return totalOutput
+	return output
 }
 
-func getBatteriesFromBank(bank string) []Battery {
-	var batteries []Battery
-	for _, char := range bank {
-		battery := Battery(utils.StringToInteger(string(char)))
-		batteries = append(batteries, battery)
+// parseBatteries converts a string of digits into a slice of integers
+func parseBatteries(bank string) []int {
+	ret := make([]int, len(bank))
+	for i, char := range bank {
+		ret[i] = utils.StringToInteger(string(char))
 	}
-	return batteries
+	return ret
 }
 
-// Find the largest battery for a given slice of batteries, returning its value & index
-func findLargestBattery(batteries []Battery) (Battery, int) {
-	maxVal := batteries[0]
+// findLargestBattery returns max battery value & its relative index in the slice
+func findLargestBattery(batteries []int) (int, int) {
+	maxBattery := batteries[0]
 	maxIndex := 0
 	for i, v := range batteries {
-		if v > maxVal {
+		if v > maxBattery {
 			maxIndex = i
-			maxVal = v
+			maxBattery = v
 		}
 	}
-	return maxVal, maxIndex
+	return maxBattery, maxIndex
 }
