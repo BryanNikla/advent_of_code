@@ -15,6 +15,11 @@ func SolutionDay4() utils.Solution {
 	}
 }
 
+const (
+	PaperRoll  = "@"
+	EmptySpace = "."
+)
+
 func day4part1(input string) int {
 	matrix := utils.LinesToCharacterMatrix(utils.GetLines(input))
 
@@ -50,18 +55,18 @@ func day4part2(input string) int {
 		replaced = 0
 		matrix = nextMatrix
 
-		utils.EachMatrix(matrix, func(char string, coords utils.Coordinates, _ [][]string) {
-			if char == "@" {
+		utils.EachMatrix(matrix, func(obj string, coords utils.Coordinates, _ [][]string) {
+			if obj == PaperRoll {
 				var adjacent int
-				utils.EachSurroundingInMatrix(matrix, coords, func(adjacentChar string, _ utils.Coordinates, _ [][]string) {
-					if adjacentChar == "@" {
+				utils.EachSurroundingInMatrix(matrix, coords, func(adjacentObj string, _ utils.Coordinates, _ [][]string) {
+					if adjacentObj == PaperRoll {
 						adjacent++
 					}
 				})
 				if adjacent < 4 {
 					total++
 					replaced++
-					utils.SetAtMatrixPosition(nextMatrix, coords, ".")
+					utils.SetAtMatrixPosition(nextMatrix, coords, EmptySpace)
 				}
 			}
 
