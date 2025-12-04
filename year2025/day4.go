@@ -16,24 +16,25 @@ func SolutionDay4() utils.Solution {
 }
 
 const (
-	PaperRoll  = "@"
-	EmptySpace = "."
+	PaperRoll           = "@"
+	EmptySpace          = "."
+	MaxAdjacentToAccess = 3
 )
 
 func day4part1(input string) int {
 	matrix := utils.LinesToCharacterMatrix(utils.GetLines(input))
 
 	var total int
-	utils.EachMatrix(matrix, func(char string, coords utils.Coordinates, _ [][]string) {
-		if char == "@" {
+	utils.EachMatrix(matrix, func(obj string, coords utils.Coordinates, _ [][]string) {
+		if obj == PaperRoll {
 			var adjacent int
 			utils.EachSurroundingInMatrix(matrix, coords, func(adjacentChar string, _ utils.Coordinates, _ [][]string) {
-				if adjacentChar == "@" {
+				if adjacentChar == PaperRoll {
 					adjacent++
 				}
 			})
 
-			if adjacent < 4 {
+			if adjacent <= MaxAdjacentToAccess {
 				total++
 			}
 		}
@@ -49,8 +50,10 @@ func day4part2(input string) int {
 
 	nextMatrix := utils.CloneMatrix(matrix)
 
-	var replaced = 1 // start at one to trigger loop
+	var replaced = 1 // Initialize as 1 to trigger first pass
 
+	// Loop as long as we are replacing any paper rolls
+	// Stop when nothing was removed in a full pass
 	for replaced > 0 {
 		replaced = 0
 		matrix = nextMatrix
@@ -63,7 +66,8 @@ func day4part2(input string) int {
 						adjacent++
 					}
 				})
-				if adjacent < 4 {
+
+				if adjacent <= MaxAdjacentToAccess {
 					total++
 					replaced++
 					utils.SetAtMatrixPosition(nextMatrix, coords, EmptySpace)
@@ -73,6 +77,5 @@ func day4part2(input string) int {
 		})
 	}
 
-	fmt.Printf("ANSWER: %d", total)
 	return total
 }
