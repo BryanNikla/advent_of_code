@@ -36,7 +36,7 @@ func (c Coordinates) MoveNorthWest(distance int) Coordinates {
 	return Coordinates{X: c.X - distance, Y: c.Y + distance}
 }
 
-func VisualizeMatrix[V any, M [][]V](matrix M, colored []Coordinates) {
+func VisualizeMatrix[V any, M ~[][]V](matrix M, colored []Coordinates) {
 	fmt.Print("\n")
 	for yy, row := range matrix {
 		for xx, element := range row {
@@ -52,7 +52,7 @@ func VisualizeMatrix[V any, M [][]V](matrix M, colored []Coordinates) {
 	fmt.Print("\n")
 }
 
-func CloneMatrix[V any](matrix [][]V) [][]V {
+func CloneMatrix[V any, M ~[][]V](matrix M) M {
 	newMatrix := make([][]V, len(matrix))
 	for i := range matrix {
 		newMatrix[i] = make([]V, len(matrix[i]))
@@ -61,11 +61,11 @@ func CloneMatrix[V any](matrix [][]V) [][]V {
 	return newMatrix
 }
 
-func SetAtMatrixPosition[V any, M [][]V](matrix M, coordinates Coordinates, value V) {
+func SetAtMatrixPosition[V any, M ~[][]V](matrix M, coordinates Coordinates, value V) {
 	matrix[coordinates.Y][coordinates.X] = value
 }
 
-func CallAtCords[V any, M [][]V](matrix M, cords Coordinates, fn func(V, Coordinates, M)) {
+func CallAtCords[V any, M ~[][]V](matrix M, cords Coordinates, fn func(V, Coordinates, M)) {
 	if cords.X < 0 || cords.Y < 0 {
 		return
 	}
@@ -79,7 +79,7 @@ func CallAtCords[V any, M [][]V](matrix M, cords Coordinates, fn func(V, Coordin
 	fn(matrix[cords.Y][cords.X], cords, matrix)
 }
 
-func EachMatrix[V any, M [][]V](matrix M, fn func(V, Coordinates, M)) {
+func EachMatrix[V any, M ~[][]V](matrix M, fn func(V, Coordinates, M)) {
 	for y, row := range matrix {
 		for x := range row {
 			cords := Coordinates{X: x, Y: y}
@@ -89,15 +89,17 @@ func EachMatrix[V any, M [][]V](matrix M, fn func(V, Coordinates, M)) {
 }
 
 // EachSurroundingInMatrix - Calls function fn for every coordinate surrounding a set of cords in a matrix
-func EachSurroundingInMatrix[Val any, M [][]Val](matrix M, cords Coordinates, fn func(Val, Coordinates, M)) {
-	CallAtCords(matrix, Coordinates{X: cords.X, Y: cords.Y - 1}, fn)
-	CallAtCords(matrix, Coordinates{X: cords.X, Y: cords.Y + 1}, fn)
-	CallAtCords(matrix, Coordinates{X: cords.X - 1, Y: cords.Y}, fn)
-	CallAtCords(matrix, Coordinates{X: cords.X + 1, Y: cords.Y}, fn)
-	CallAtCords(matrix, Coordinates{X: cords.X - 1, Y: cords.Y - 1}, fn)
-	CallAtCords(matrix, Coordinates{X: cords.X + 1, Y: cords.Y + 1}, fn)
-	CallAtCords(matrix, Coordinates{X: cords.X - 1, Y: cords.Y + 1}, fn)
-	CallAtCords(matrix, Coordinates{X: cords.X + 1, Y: cords.Y - 1}, fn)
+func EachSurroundingInMatrix[Val any, M ~[][]Val](matrix M, cords Coordinates, fn func(Val, Coordinates, M)) {
+	directions := []Coordinates{
+		{0, -1}, {0, 1}, {-1, 0}, {1, 0}, // Cardinals
+		{-1, -1}, {1, 1}, {-1, 1}, {1, -1}, // Diagonals
+	}
+	for _, dir := range directions {
+		CallAtCords(matrix, Coordinates{
+			X: cords.X + dir.X,
+			Y: cords.Y + dir.Y,
+		}, fn)
+	}
 }
 
 func EachSurroundingCardinalInMatrix[Val any, M [][]Val](matrix M, cords Coordinates, fn func(Val, Coordinates, M)) {
@@ -107,13 +109,13 @@ func EachSurroundingCardinalInMatrix[Val any, M [][]Val](matrix M, cords Coordin
 	CallAtCords(matrix, cords.MoveWest(1), fn)
 }
 
-func IsLastColOfMatrix[V any, M [][]V](matrix M, cords Coordinates) bool {
+func IsLastColOfMatrix[V any, M ~[][]V](matrix M, cords Coordinates) bool {
 	return cords.Y == len(matrix[cords.X])-1
 }
 
 // GetValueAtCords - Return value present at matrix coordinates.
 // Handles invalid coordinates gracefully by returning the default value for the expected type of value
-func GetValueAtCords[V any, M [][]V](matrix M, cords Coordinates) V {
+func GetValueAtCords[V any, M ~[][]V](matrix M, cords Coordinates) V {
 	defer func() V {
 		recover()
 		var defaultValue V
@@ -127,6 +129,15 @@ func LinesToCharacterMatrix(lines []string) [][]string {
 	var matrix [][]string
 	for i := len(lines) - 1; i >= 0; i-- {
 		matrix = append(matrix, strings.Split(lines[i], ""))
+	}
+
+	return matrix
+}
+
+func LinesToByteMatrix(lines []string) [][]byte {
+	var matrix [][]byte
+	for i := len(lines) - 1; i >= 0; i-- {
+		matrix = append(matrix, []byte(lines[i]))
 	}
 
 	return matrix

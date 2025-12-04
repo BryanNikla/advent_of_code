@@ -13,6 +13,8 @@ func SolutionDay4() utils.Solution {
 	}
 }
 
+type WarehouseFloor [][]string
+
 const (
 	PaperRoll           = "@"
 	EmptySpace          = "."
@@ -34,32 +36,48 @@ func day4part1(input string) int {
 
 func day4part2(input string) int {
 	var total int
-	matrix := utils.LinesToCharacterMatrix(utils.GetLines(input))
+	room := WarehouseFloor(utils.LinesToCharacterMatrix(utils.GetLines(input)))
 
-	process := true
-	for process { // Loop as long as we are replacing any paper rolls
-		process = false
-		utils.EachMatrix(matrix, func(obj string, coords utils.Coordinates, _ [][]string) {
-			if obj == PaperRoll {
-				if isPaperRollAccessible(matrix, coords) {
-					total++
-					process = true
-					utils.SetAtMatrixPosition(matrix, coords, EmptySpace)
-				}
+	var processQueue []utils.Coordinates
+
+	utils.EachMatrix(room, func(obj string, coords utils.Coordinates, _ WarehouseFloor) {
+		if obj == PaperRoll {
+			if isPaperRollAccessible(room, coords) {
+				processQueue = append(processQueue, coords)
 			}
+		}
+	})
 
-		})
+	for len(processQueue) > 0 {
+		curr := processQueue[0]
+		processQueue = processQueue[1:]
+
+		if utils.GetValueAtCords(room, curr) == PaperRoll {
+			removePaperRoll(room, curr)
+			total++
+			utils.EachSurroundingInMatrix(room, curr, func(adjacentObj string, adjacentCoords utils.Coordinates, _ WarehouseFloor) {
+				if adjacentObj == PaperRoll {
+					if isPaperRollAccessible(room, adjacentCoords) {
+						processQueue = append(processQueue, adjacentCoords)
+					}
+				}
+			})
+		}
 	}
 
 	return total
 }
 
-func isPaperRollAccessible(matrix [][]string, coords utils.Coordinates) bool {
+func isPaperRollAccessible(matrix WarehouseFloor, coords utils.Coordinates) bool {
 	var adjacent int
-	utils.EachSurroundingInMatrix(matrix, coords, func(adjacentObj string, _ utils.Coordinates, _ [][]string) {
+	utils.EachSurroundingInMatrix(matrix, coords, func(adjacentObj string, _ utils.Coordinates, _ WarehouseFloor) {
 		if adjacentObj == PaperRoll {
 			adjacent++
 		}
 	})
 	return adjacent <= MaxAdjacentToAccess
+}
+
+func removePaperRoll(room WarehouseFloor, coords utils.Coordinates) {
+	utils.SetAtMatrixPosition(room, coords, EmptySpace)
 }
