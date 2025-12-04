@@ -21,22 +21,14 @@ const (
 
 func day4part1(input string) int {
 	matrix := utils.LinesToCharacterMatrix(utils.GetLines(input))
-
 	var total int
 	utils.EachMatrix(matrix, func(obj string, coords utils.Coordinates, _ [][]string) {
 		if obj == PaperRoll {
-			var adjacent int
-			utils.EachSurroundingInMatrix(matrix, coords, func(adjacentChar string, _ utils.Coordinates, _ [][]string) {
-				if adjacentChar == PaperRoll {
-					adjacent++
-				}
-			})
-			if adjacent <= MaxAdjacentToAccess {
+			if isPaperRollAccessible(matrix, coords) {
 				total++
 			}
 		}
 	})
-
 	return total
 }
 
@@ -49,13 +41,7 @@ func day4part2(input string) int {
 		process = false
 		utils.EachMatrix(matrix, func(obj string, coords utils.Coordinates, _ [][]string) {
 			if obj == PaperRoll {
-				var adjacent int
-				utils.EachSurroundingInMatrix(matrix, coords, func(adjacentObj string, _ utils.Coordinates, _ [][]string) {
-					if adjacentObj == PaperRoll {
-						adjacent++
-					}
-				})
-				if adjacent <= MaxAdjacentToAccess {
+				if isPaperRollAccessible(matrix, coords) {
 					total++
 					process = true
 					utils.SetAtMatrixPosition(matrix, coords, EmptySpace)
@@ -66,4 +52,14 @@ func day4part2(input string) int {
 	}
 
 	return total
+}
+
+func isPaperRollAccessible(matrix [][]string, coords utils.Coordinates) bool {
+	var adjacent int
+	utils.EachSurroundingInMatrix(matrix, coords, func(adjacentObj string, _ utils.Coordinates, _ [][]string) {
+		if adjacentObj == PaperRoll {
+			adjacent++
+		}
+	})
+	return adjacent <= MaxAdjacentToAccess
 }
