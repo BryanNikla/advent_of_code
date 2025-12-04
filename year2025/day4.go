@@ -1,8 +1,6 @@
 package year2025
 
 import (
-	"fmt"
-
 	"advent_of_code/utils"
 )
 
@@ -40,7 +38,6 @@ func day4part1(input string) int {
 		}
 	})
 
-	fmt.Println(total)
 	return total
 }
 

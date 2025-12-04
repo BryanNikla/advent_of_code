@@ -125,10 +125,6 @@ func GetValueAtCords[V any, M [][]V](matrix M, cords Coordinates) V {
 // LinesToCharacterMatrix - Return a matrix of individual string characters from a slice of strings (lines)
 func LinesToCharacterMatrix(lines []string) [][]string {
 	var matrix [][]string
-	//for _, line := range lines {
-	//	matrix = append(matrix, strings.Split(line, ""))
-	//}
-	// Do this in reverse so that if we ever 'visualize' this it makes sense // TODO: Make more sense of this
 	for i := len(lines) - 1; i >= 0; i-- {
 		matrix = append(matrix, strings.Split(lines[i], ""))
 	}
