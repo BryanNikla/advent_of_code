@@ -13,36 +13,34 @@ func SolutionDay4() utils.Solution {
 	}
 }
 
-type WarehouseFloor [][]string
-
 const (
-	PaperRoll           = "@"
-	EmptySpace          = "."
+	PaperRoll           = '@'
+	EmptySpace          = '.'
 	MaxAdjacentToAccess = 3
 )
 
 func day4part1(input string) int {
-	matrix := utils.LinesToCharacterMatrix(utils.GetLines(input))
-	var total int
-	utils.EachMatrix(matrix, func(obj string, coords utils.Coordinates, _ [][]string) {
+	room := WarehouseFloor(utils.LinesToByteMatrix(utils.GetLines(input)))
+	var totalAccessible int
+	utils.EachMatrix(room, func(obj byte, coords utils.Coordinates, _ WarehouseFloor) {
 		if obj == PaperRoll {
-			if isPaperRollAccessible(matrix, coords) {
-				total++
+			if room.isPaperRollAccessible(coords) {
+				totalAccessible++
 			}
 		}
 	})
-	return total
+	return totalAccessible
 }
 
 func day4part2(input string) int {
-	var total int
-	room := WarehouseFloor(utils.LinesToCharacterMatrix(utils.GetLines(input)))
+	var totalRemoved int
+	room := WarehouseFloor(utils.LinesToByteMatrix(utils.GetLines(input)))
 
 	var processQueue []utils.Coordinates
 
-	utils.EachMatrix(room, func(obj string, coords utils.Coordinates, _ WarehouseFloor) {
+	utils.EachMatrix(room, func(obj byte, coords utils.Coordinates, _ WarehouseFloor) {
 		if obj == PaperRoll {
-			if isPaperRollAccessible(room, coords) {
+			if room.isPaperRollAccessible(coords) {
 				processQueue = append(processQueue, coords)
 			}
 		}
@@ -52,12 +50,12 @@ func day4part2(input string) int {
 		curr := processQueue[0]
 		processQueue = processQueue[1:]
 
-		if utils.GetValueAtCords(room, curr) == PaperRoll {
-			removePaperRoll(room, curr)
-			total++
-			utils.EachSurroundingInMatrix(room, curr, func(adjacentObj string, adjacentCoords utils.Coordinates, _ WarehouseFloor) {
+		if room.At(curr) == PaperRoll {
+			room.removePaperRoll(curr)
+			totalRemoved++
+			utils.EachSurroundingInMatrix(room, curr, func(adjacentObj byte, adjacentCoords utils.Coordinates, _ WarehouseFloor) {
 				if adjacentObj == PaperRoll {
-					if isPaperRollAccessible(room, adjacentCoords) {
+					if room.isPaperRollAccessible(adjacentCoords) {
 						processQueue = append(processQueue, adjacentCoords)
 					}
 				}
@@ -65,12 +63,14 @@ func day4part2(input string) int {
 		}
 	}
 
-	return total
+	return totalRemoved
 }
 
-func isPaperRollAccessible(matrix WarehouseFloor, coords utils.Coordinates) bool {
+type WarehouseFloor [][]byte
+
+func (f WarehouseFloor) isPaperRollAccessible(coords utils.Coordinates) bool {
 	var adjacent int
-	utils.EachSurroundingInMatrix(matrix, coords, func(adjacentObj string, _ utils.Coordinates, _ WarehouseFloor) {
+	utils.EachSurroundingInMatrix(f, coords, func(adjacentObj byte, _ utils.Coordinates, _ WarehouseFloor) {
 		if adjacentObj == PaperRoll {
 			adjacent++
 		}
@@ -78,6 +78,10 @@ func isPaperRollAccessible(matrix WarehouseFloor, coords utils.Coordinates) bool
 	return adjacent <= MaxAdjacentToAccess
 }
 
-func removePaperRoll(room WarehouseFloor, coords utils.Coordinates) {
-	utils.SetAtMatrixPosition(room, coords, EmptySpace)
+func (f WarehouseFloor) removePaperRoll(coords utils.Coordinates) {
+	utils.SetAtMatrixPosition(f, coords, EmptySpace)
+}
+
+func (f WarehouseFloor) At(coords utils.Coordinates) byte {
+	return utils.GetValueAtCords(f, coords)
 }
