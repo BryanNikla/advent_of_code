@@ -31,7 +31,6 @@ func day4part1(input string) int {
 					adjacent++
 				}
 			})
-
 			if adjacent <= MaxAdjacentToAccess {
 				total++
 			}
@@ -45,16 +44,9 @@ func day4part2(input string) int {
 	var total int
 	matrix := utils.LinesToCharacterMatrix(utils.GetLines(input))
 
-	nextMatrix := utils.CloneMatrix(matrix)
-
-	var replaced = 1 // Initialize as 1 to trigger first pass
-
-	// Loop as long as we are replacing any paper rolls
-	// Stop when nothing was removed in a full pass
-	for replaced > 0 {
-		replaced = 0
-		matrix = nextMatrix
-
+	process := true
+	for process { // Loop as long as we are replacing any paper rolls
+		process = false
 		utils.EachMatrix(matrix, func(obj string, coords utils.Coordinates, _ [][]string) {
 			if obj == PaperRoll {
 				var adjacent int
@@ -63,11 +55,10 @@ func day4part2(input string) int {
 						adjacent++
 					}
 				})
-
 				if adjacent <= MaxAdjacentToAccess {
 					total++
-					replaced++
-					utils.SetAtMatrixPosition(nextMatrix, coords, EmptySpace)
+					process = true
+					utils.SetAtMatrixPosition(matrix, coords, EmptySpace)
 				}
 			}
 
