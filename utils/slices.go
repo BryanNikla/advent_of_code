@@ -1,17 +1,26 @@
 package utils
 
+// MiddleItem - Returns the middle item of a slice. If even number of items, returns the upper middle
 func MiddleItem[V any](slice []V) V {
 	middleIndex := len(slice) / 2
 	return slice[middleIndex]
 }
 
-// Reduce - Reducer for Slices. Initial value is always default for value type
+// Reduce - Reducer for Slices. Initial value is always default empty for value type
 func Reduce[T any, V any](slice []T, reducer func(accumulated V, currentValue T, currentIndex int) V) V {
 	var value V
 	for i := 0; i < len(slice); i++ {
 		value = reducer(value, slice[i], i)
 	}
 	return value
+}
+
+// ForEach - Iterates over each element in the slice, executing the callback function for each element
+// Basically mimics Javascript's Array.forEach() method
+func ForEach[T any](slice []T, callback func(T, int)) {
+	for i, element := range slice {
+		callback(element, i)
+	}
 }
 
 // Every - Returns true if all elements in the slice satisfy the predicate, and false otherwise
@@ -25,6 +34,7 @@ func Every[T any](slice []T, predicate func(T) bool) bool {
 	return true
 }
 
+// SumValuesInSlice - Sums all numeric values in a slice and returns the total
 func SumValuesInSlice[V int | int8 | int16 | int32 | int64 | float32 | float64, S []V](slice S) V {
 	var sum V
 	for _, value := range slice {

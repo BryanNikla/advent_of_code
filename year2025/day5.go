@@ -1,9 +1,7 @@
 package year2025
 
 import (
-	"fmt"
 	"sort"
-	"strings"
 
 	"advent_of_code/utils"
 )
@@ -17,26 +15,10 @@ func SolutionDay5() utils.Solution {
 	}
 }
 
-type FreshIdRange struct {
-	Start int
-	End   int
-}
-
-func (r FreshIdRange) Merge(other FreshIdRange) (FreshIdRange, bool) {
-	if r.Start > other.End+1 || other.Start > r.End+1 {
-		return FreshIdRange{}, false
-	}
-	newRange := FreshIdRange{
-		Start: min(r.Start, other.Start),
-		End:   max(r.End, other.End),
-	}
-	return newRange, true
-}
-
 func day5part1(input string) int {
 	lines := utils.GetLines(input)
 	countGoodIngredients := 0
-	var freshRanges []FreshIdRange
+	var freshRanges []utils.Range
 	var parseIngredients bool
 	for _, line := range lines {
 		if line == "" {
@@ -52,10 +34,7 @@ func day5part1(input string) int {
 				}
 			}
 		} else {
-			bounds := strings.Split(line, "-")
-			start := utils.StringToInteger(bounds[0])
-			end := utils.StringToInteger(bounds[1])
-			freshRanges = append(freshRanges, FreshIdRange{Start: start, End: end})
+			freshRanges = append(freshRanges, utils.NewRangeFromString(line, "-"))
 		}
 	}
 	return countGoodIngredients
@@ -63,19 +42,15 @@ func day5part1(input string) int {
 
 func day5part2(input string) int {
 
-	var ranges []FreshIdRange
+	var ranges []utils.Range
 	for _, line := range utils.GetLines(input) {
 		if line == "" {
 			break
 		}
-		bounds := strings.Split(line, "-")
-		ranges = append(ranges, FreshIdRange{
-			Start: utils.StringToInteger(bounds[0]),
-			End:   utils.StringToInteger(bounds[1]),
-		})
+		ranges = append(ranges, utils.NewRangeFromString(line, "-"))
 	}
 
-	var mergedRanges []FreshIdRange
+	var mergedRanges []utils.Range
 
 	// Sorting the slices in order by start
 	// Allows merging later & handling merging in one pass
@@ -87,23 +62,17 @@ func day5part2(input string) int {
 		mergedRanges = append(mergedRanges, ranges[0])
 	}
 
-	for i := 1; i < len(ranges); i++ {
-		current := ranges[i]
+	utils.ForEach(ranges, func(r utils.Range, _ int) {
 		lastMergedIndex, lastMerged := utils.Last(mergedRanges)
-
-		merged, didMerge := lastMerged.Merge(current)
+		merged, didMerge := lastMerged.Merge(r)
 		if didMerge {
 			mergedRanges[lastMergedIndex] = merged
 		} else {
-			mergedRanges = append(mergedRanges, current)
+			mergedRanges = append(mergedRanges, r)
 		}
-	}
+	})
 
-	totalFreshIngredients := 0
-	for _, r := range mergedRanges {
-		totalFreshIngredients += r.End - r.Start + 1 // Adding +1 to be inclusive of ends
-	}
-
-	fmt.Printf("\nTotal Fresh Ingredients: %d\n", totalFreshIngredients)
-	return totalFreshIngredients
+	return utils.Reduce(mergedRanges, func(total int, r utils.Range, _ int) int {
+		return total + r.Length()
+	})
 }
