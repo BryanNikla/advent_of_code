@@ -65,3 +65,13 @@ func FindFirstSpanWithLength[V string | int](slice []V, target V, length int) (i
 	// No span found
 	return -1, -1
 }
+
+// Last - Return the last index and value of a slice, or -1 & zero value if empty
+func Last[V any](slice []V) (int, V) {
+	if len(slice) == 0 {
+		var zero V
+		return -1, zero
+	}
+	idx := len(slice) - 1
+	return idx, slice[idx]
+}

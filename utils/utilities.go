@@ -188,3 +188,7 @@ func ForRange(start int, end int, fn func(i int)) {
 		fn(i)
 	}
 }
+
+func InRange(value int, start int, end int) bool {
+	return value >= start && value <= end
+}
