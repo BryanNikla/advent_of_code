@@ -2,7 +2,6 @@ package year2025
 
 import (
 	"sort"
-	"strconv"
 	"strings"
 
 	"advent_of_code/utils"
@@ -17,46 +16,27 @@ func SolutionDay6() utils.Solution {
 	}
 }
 
-func isNumeric(s string) bool {
-	_, err := strconv.ParseFloat(s, 64)
-	return err == nil
-}
-
 func day6part1(input string) int {
-	grandTotal := 0
-
 	problems := make(map[int][]int)
 	operations := make(map[int]string)
 
-	for _, line := range utils.GetLines(input) {
+	lines := utils.GetLines(input)
+	for lineIndex, line := range lines {
 		parts := strings.Fields(line)
 		for i, part := range parts {
-			if isNumeric(part) {
-				problems[i] = append(problems[i], utils.StringToInteger(part))
-			} else {
+			if lineIndex == len(lines)-1 {
 				operations[i] = part
-			}
-		}
-	}
-
-	for i := 0; i < len(problems); i++ {
-		total := 0
-		for j, num := range problems[i] {
-			if j == 0 {
-				total = num
 			} else {
-				switch operations[i] {
-				case "+":
-					total += num
-				case "*":
-					total *= num
-				}
+				problems[i] = append(problems[i], utils.StringToInteger(part))
 			}
 		}
-		grandTotal += total
 	}
 
-	return grandTotal
+	total := 0
+	for i := 0; i < len(problems); i++ {
+		total += ApplyOperationToAll(problems[i], operations[i])
+	}
+	return total
 }
 
 func day6part2(input string) int {
@@ -65,8 +45,8 @@ func day6part2(input string) int {
 
 	// Create a map of indices that are separators in the first line (initial candidates)
 	indexIsSeparator := make(map[int]bool)
-	for i, char := range strings.Split(lines[0], "") {
-		if char == " " {
+	for i, r := range lines[0] {
+		if r == ' ' {
 			indexIsSeparator[i] = true
 		}
 	}
@@ -153,21 +133,25 @@ func day6part2(input string) int {
 		}
 
 		// DO THE MATHS
-		total := 0
-		for j, num := range trueNumbers {
-			if j == 0 {
-				total = num
-			} else {
-				switch strings.TrimSpace(operations[i]) {
-				case "+":
-					total += num
-				case "*":
-					total *= num
-				}
-			}
-		}
-		grandTotal += total
+		grandTotal += ApplyOperationToAll(trueNumbers, strings.TrimSpace(operations[i]))
 	}
 
 	return grandTotal
+}
+
+func ApplyOperationToAll(numbers []int, operation string) int {
+	total := 0
+	for j, num := range numbers {
+		if j == 0 {
+			total = num
+		} else {
+			switch operation {
+			case "+":
+				total += num
+			case "*":
+				total *= num
+			}
+		}
+	}
+	return total
 }
