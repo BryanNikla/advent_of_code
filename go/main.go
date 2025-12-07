@@ -5,17 +5,20 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
+	"time"
 
+	"advent_of_code/registry"
 	"advent_of_code/utils"
+
+	// Import year packages to register them
+	_ "advent_of_code/year2023"
+	_ "advent_of_code/year2024"
+	_ "advent_of_code/year2025"
 )
 
-const (
-	DefaultYear = 2025
-	DefaultDay  = 0
-)
+var DefaultYear = time.Now().Year()
 
 func main() {
 	year := flag.Int("year", -1, "The year of AoC to run")
@@ -57,13 +60,14 @@ func userInput(day *int, year *int) {
 		fmt.Println(utils.ColorText("red", "\nEnter the day (default All):"))
 		text, _ := reader.ReadString('\n')
 		text = strings.TrimSpace(text)
+		var defaultDay = 0 // 0 means all days
 		if text == "" {
-			*day = DefaultDay
+			*day = defaultDay
 		} else {
 			d, err := strconv.Atoi(text)
 			if err != nil {
 				printIssue(fmt.Sprintf("Invalid input '%s', running all days", text))
-				*day = DefaultDay
+				*day = defaultDay
 			} else {
 				*day = d
 			}
@@ -73,7 +77,7 @@ func userInput(day *int, year *int) {
 
 func solve(day int, year int) {
 	colorCycle := utils.NewColorCycle()
-	for _, solution := range getSolutions(year, day) {
+	for _, solution := range registry.Registry.GetSolutions(year, day) {
 		printContents(colorCycle.NextColor(), []string{
 			fmt.Sprintf("Day %d", solution.Day),
 			fmt.Sprintf("https://adventofcode.com/%d/day/%d", year, solution.Day),
@@ -81,37 +85,6 @@ func solve(day int, year int) {
 			formatSolutionOutcome(solution, 2),
 		})
 	}
-}
-
-func getSolutions(year int, day int) []utils.Solution {
-	daysMap, ok := solutionRegistry[year]
-	if !ok {
-		printIssue("Year not found")
-		return nil
-	}
-
-	////////////////////////////////////////////
-	// specific day
-	if day > 0 {
-		if solver, ok := daysMap[day]; ok {
-			return []utils.Solution{solver()}
-		}
-		printIssue("Day not found")
-		return nil
-	}
-
-	////////////////////////////////////////////
-	// All days for the year
-	var solutions []utils.Solution
-	var days []int
-	for d := range daysMap {
-		days = append(days, d)
-	}
-	sort.Ints(days)
-	for _, d := range days {
-		solutions = append(solutions, daysMap[d]())
-	}
-	return solutions
 }
 
 func formatSolutionOutcome(solution utils.Solution, part int) string {

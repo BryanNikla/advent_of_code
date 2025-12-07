@@ -4,16 +4,19 @@ import (
 	"strconv"
 	"strings"
 
-	utils "advent_of_code/utils"
+	"advent_of_code/registry"
+	"advent_of_code/utils"
 )
 
-func SolutionDay2() utils.Solution {
-	input := getInput(2)
-	return utils.Solution{
-		Day:   2,
-		Test1: day2part1(input) == 1227775554,
-		Test2: day2part2(input) == 4174379265,
-	}
+func init() {
+	registry.RegisterSolution(2025, 2, func() utils.Solution {
+		input1, input2 := utils.GetInput(2025, 2)
+		return utils.Solution{
+			Day:   2,
+			Test1: day2part1(input1) == 1227775554,
+			Test2: day2part2(input2) == 4174379265,
+		}
+	})
 }
 
 func day2part1(input string) int {

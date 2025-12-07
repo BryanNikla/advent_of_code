@@ -1,0 +1,96 @@
+package year2023
+
+import (
+	"regexp"
+	"strconv"
+
+	"advent_of_code/registry"
+	"advent_of_code/utils"
+)
+
+func init() {
+	registry.RegisterSolution(2023, 1, func() utils.Solution {
+		input1, input2 := utils.GetInput(2023, 1)
+		return utils.Solution{
+			Day:   1,
+			Test1: day1part1(input1) == 142,
+			Test2: day1part2(input2) == 281,
+		}
+	})
+}
+
+func day1part1(input string) int {
+	lines := utils.GetLines(input)
+
+	var numbers []string
+
+	for _, line := range lines {
+		match := regexp.MustCompile(`\d`).FindAllString(line, -1)
+		var first = match[0]
+		var last = match[len(match)-1]
+		numbers = append(numbers, first+last)
+	}
+
+	return sumSliceOfDigitStrings(numbers)
+}
+
+func day1part2(input string) int {
+	lines := utils.GetLines(input)
+
+	var numbers []string
+
+	for _, line := range lines {
+		r := regexp.MustCompile(`^(one|two|three|four|five|six|seven|eight|nine|\d)`)
+		var lineNumbers []string
+		for len(line) > 0 {
+			match := r.FindString(line)
+			line = line[1:]
+			if match != "" {
+				lineNumbers = append(lineNumbers, findDigit(match))
+			}
+		}
+		if len(lineNumbers) != 0 {
+			var first = lineNumbers[0]
+			var last = lineNumbers[len(lineNumbers)-1]
+			numbers = append(numbers, first+last)
+		}
+	}
+
+	return sumSliceOfDigitStrings(numbers)
+}
+
+// sumSliceOfDigitStrings sums the digits in a slice of strings, assuming each string represents a Number digit
+func sumSliceOfDigitStrings(digits []string) int {
+	var sum int
+	for _, digit := range digits {
+		i, _ := strconv.Atoi(digit)
+		sum = sum + i
+	}
+	return sum
+}
+
+// findDigit returns the digit if the string is a number word, else return the string
+func findDigit(x string) string {
+	switch x {
+	case "one":
+		return "1"
+	case "two":
+		return "2"
+	case "three":
+		return "3"
+	case "four":
+		return "4"
+	case "five":
+		return "5"
+	case "six":
+		return "6"
+	case "seven":
+		return "7"
+	case "eight":
+		return "8"
+	case "nine":
+		return "9"
+	default:
+		return x
+	}
+}

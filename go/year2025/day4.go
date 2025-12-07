@@ -1,16 +1,19 @@
 package year2025
 
 import (
-	utils "advent_of_code/utils"
+	"advent_of_code/registry"
+	"advent_of_code/utils"
 )
 
-func SolutionDay4() utils.Solution {
-	input := getInput(4)
-	return utils.Solution{
-		Day:   4,
-		Test1: day4part1(input) == 13,
-		Test2: day4part2(input) == 43,
-	}
+func init() {
+	registry.RegisterSolution(2025, 4, func() utils.Solution {
+		input1, input2 := utils.GetInput(2025, 4)
+		return utils.Solution{
+			Day:   4,
+			Test1: day4part1(input1) == 13,
+			Test2: day4part2(input2) == 43,
+		}
+	})
 }
 
 const (
