@@ -6,9 +6,10 @@ import (
 	"io"
 	"log"
 	"os"
-	"os/exec"
 	"strconv"
 	"strings"
+
+	"golang.org/x/term"
 )
 
 func GetFileContent(path string) string {
@@ -112,25 +113,36 @@ func ColorText[V any](color string, text V) string {
 }
 
 func ConsoleSize() (int, int) {
-	cmd := exec.Command("stty", "size")
-	cmd.Stdin = os.Stdin
-	out, err := cmd.Output()
+	// fd 1 is usually Stdout
+	width, height, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil {
 		log.Fatal(err)
 	}
-	s := string(out)
-	s = strings.TrimSpace(s)
-	sArr := strings.Split(s, " ")
-	height, err := strconv.Atoi(sArr[0])
-	if err != nil {
-		log.Fatal(err)
-	}
-	width, err := strconv.Atoi(sArr[1])
-	if err != nil {
-		log.Fatal(err)
-	}
+
+	// Your original function returned (height, width)
 	return height, width
 }
+
+// func ConsoleSize() (int, int) {
+// 	cmd := exec.Command("stty", "size")
+// 	cmd.Stdin = os.Stdin
+// 	out, err := cmd.Output()
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	s := string(out)
+// 	s = strings.TrimSpace(s)
+// 	sArr := strings.Split(s, " ")
+// 	height, err := strconv.Atoi(sArr[0])
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	width, err := strconv.Atoi(sArr[1])
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	return height, width
+// }
 
 // Forever - Loop forever until a max iteration count is reached
 func Forever(max int, fn func(f func())) error {

@@ -45,5 +45,6 @@ var solutionRegistry = map[int]map[int]func() utils.Solution{
 		4: year2025.SolutionDay4,
 		5: year2025.SolutionDay5,
 		6: year2025.SolutionDay6,
+		7: year2025.SolutionDay7,
 	},
 }
