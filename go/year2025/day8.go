@@ -129,8 +129,7 @@ func parseIntoConnectionsMap(all []Coordinate3D) map[string]circuitConnection {
 func day8part1(input string) int {
 	all := parseLinesIntoCoordinate3Ds(utils.GetLines(input))
 
-	// Generate all possible connections
-	allConnectionsMap := parseIntoConnectionsMap(all)
+	allConnectionsMap := parseIntoConnectionsMap(all) // Generate all possible connections
 
 	allConnections := make([]circuitConnection, 0, len(allConnectionsMap))
 	for _, conn := range allConnectionsMap {
@@ -209,5 +208,57 @@ func day8part1(input string) int {
 func day8part2(input string) int {
 	all := parseLinesIntoCoordinate3Ds(utils.GetLines(input))
 
-	return 0
+	allConnectionsMap := parseIntoConnectionsMap(all) // Generate all possible connections
+
+	allConnections := make([]circuitConnection, 0, len(allConnectionsMap))
+	for _, conn := range allConnectionsMap {
+		allConnections = append(allConnections, conn)
+	}
+
+	// Sort connections by distance (shortest to longest)
+	sort.Slice(allConnections, func(i, j int) bool {
+		return allConnections[i].Distance < allConnections[j].Distance
+	})
+
+	junctionBoxCount := len(all)
+
+	var connCount int // Number of connections to consider (continues to rise)
+	for connCount = 0; connCount < len(allConnections); {
+		connCount++
+		testSet := allConnections[:connCount]
+
+		dsu := NewDSU()
+
+		// Build relationships (Union)
+		for _, item := range testSet {
+			dsu.Union(item.A.ID, item.B.ID)
+		}
+
+		// Group the structs based on the Root of their IDs
+		groups := make(map[int][]circuitConnection)
+
+		for _, item := range testSet {
+			// We can check A or B, they are in the same set now.
+			root := dsu.Find(item.A.ID)
+			groups[root] = append(groups[root], item)
+		}
+
+		groupsSlice := make([][]circuitConnection, 0, len(groups))
+		for _, group := range groups {
+			groupsSlice = append(groupsSlice, group)
+		}
+
+		if len(groupsSlice) != 1 {
+			continue // Not all connected yet
+		}
+
+		// Check if this group contains all junction boxes now
+		if countDistinct(groupsSlice[0]) == junctionBoxCount {
+			lastConnection := testSet[len(testSet)-1]
+			return int(lastConnection.A.X * lastConnection.B.X) // Return product of X coordinates
+		}
+	}
+
+	fmt.Println("⚠️ Something is very wrong")
+	return 0 // Should ideally never reach here.
 }
