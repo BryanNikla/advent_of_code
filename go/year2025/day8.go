@@ -58,11 +58,14 @@ func parseIntoConnectionsMap(all []utils.Coordinate3D) map[string]circuitConnect
 	for _, a := range all {
 		for _, b := range all {
 			if a != b {
+				// Create a unique key for the connection (order-independent); key is always lowerID-higherID
 				id1, id2 := a.ID, b.ID
 				if id1 > id2 {
 					id1, id2 = id2, id1
 				}
 				key := fmt.Sprintf("%d-%d", id1, id2)
+
+				// Add connection if it doesn't already exist
 				if _, exists := allConnectionsMap[key]; !exists {
 					allConnectionsMap[key] = circuitConnection{
 						A:        a,
@@ -94,9 +97,7 @@ func day8part1(input string) int {
 	})
 
 	///////////////////////////////////////////////////////////////
-	// IMPORTANT VARIABLE TO CHANGE FOR REAL RUN
-	var connectionsToKeep = 10 // test is 10
-	//var connectionsToKeep = 1000 // Real input is 1000
+	var connectionsToKeep = 10 // Change to 1000 for real input
 	///////////////////////////////////////////////////////////////
 
 	shortestConnections := allConnections[:connectionsToKeep]
@@ -186,7 +187,7 @@ func day8part2(input string) int {
 		// Check if this group contains all junction boxes now
 		if countDistinct(groupsSlice[0]) == junctionBoxCount {
 			lastConnection := testSet[len(testSet)-1]
-			return int(lastConnection.A.X * lastConnection.B.X) // Return product of X coordinates
+			return int(utils.Multiply(lastConnection.A.X, lastConnection.B.X))
 		}
 	}
 

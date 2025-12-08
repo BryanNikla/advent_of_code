@@ -1,6 +1,14 @@
 package utils
 
-// DSU ( Disjoint Set Union )
+// Disjoint Set Union (DSU) or Union-Find data structure implementation
+// Used to efficiently manage and merge disjoint sets
+// Supports two primary operations: Find and Union
+// Find: Determine the representative (root) of the set containing a specific element
+// Union: Merge two sets into a single set
+//
+// Interesting read: https://www.geeksforgeeks.org/dsa/introduction-to-disjoint-set-data-structure-or-union-find-algorithm/
+// Useful for problems involving connectivity, clustering, and network components
+
 type DSU struct {
 	// Parent map to track the root of each element
 	parent map[int]int // key: element ID, value: parent ID
