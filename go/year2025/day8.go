@@ -101,10 +101,8 @@ func parseLinesIntoCoordinate3Ds(lines []string) []Coordinate3D {
 	return all
 }
 
-func day8part1(input string) int {
-	all := parseLinesIntoCoordinate3Ds(utils.GetLines(input))
-
-	/////////////////////////////////////////////////////////
+// parseAllConnectionsMap generates all possible connections between points
+func parseIntoConnectionsMap(all []Coordinate3D) map[string]circuitConnection {
 	allConnectionsMap := make(map[string]circuitConnection)
 	// Generate all possible connections
 	for _, a := range all {
@@ -125,6 +123,14 @@ func day8part1(input string) int {
 			}
 		}
 	}
+	return allConnectionsMap
+}
+
+func day8part1(input string) int {
+	all := parseLinesIntoCoordinate3Ds(utils.GetLines(input))
+
+	// Generate all possible connections
+	allConnectionsMap := parseIntoConnectionsMap(all)
 
 	allConnections := make([]circuitConnection, 0, len(allConnectionsMap))
 	for _, conn := range allConnectionsMap {
@@ -201,7 +207,7 @@ func day8part1(input string) int {
 }
 
 func day8part2(input string) int {
-	//all := parseLinesIntoCoordinate3Ds(utils.GetLines(input))
+	all := parseLinesIntoCoordinate3Ds(utils.GetLines(input))
 
 	return 0
 }
