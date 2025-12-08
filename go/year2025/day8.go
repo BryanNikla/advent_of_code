@@ -2,7 +2,6 @@ package year2025
 
 import (
 	"fmt"
-	"math"
 	"sort"
 	"strings"
 
@@ -21,26 +20,10 @@ func init() {
 	})
 }
 
-type Coordinate3D struct {
-	ID int
-	X  float64
-	Y  float64
-	Z  float64
-}
-
-// DistanceTo calculates the Euclidean distance between point p and point q
-// sqrt(dx^2 + dy^2 + dz^2)
-func (p Coordinate3D) DistanceTo(q Coordinate3D) float64 {
-	dx := p.X - q.X
-	dy := p.Y - q.Y
-	dz := p.Z - q.Z
-	return math.Sqrt(dx*dx + dy*dy + dz*dz)
-}
-
+// circuitConnection represents a connection between two 3D coordinates and the distance between them
 type circuitConnection struct {
-	ID       int
-	A        Coordinate3D
-	B        Coordinate3D
+	A        utils.Coordinate3D
+	B        utils.Coordinate3D
 	Distance float64
 }
 
@@ -54,44 +37,11 @@ func countDistinct(group []circuitConnection) int {
 	return len(distinct)
 }
 
-// DSU ( Disjoint Set Union )
-type DSU struct {
-	parent map[int]int
-}
-
-func NewDSU() *DSU {
-	return &DSU{
-		parent: make(map[int]int),
-	}
-}
-
-// Find returns the representative (root) of the set 'i' belongs to.
-func (d *DSU) Find(i int) int {
-	if _, exists := d.parent[i]; !exists {
-		d.parent[i] = i
-		return i
-	}
-	if d.parent[i] == i {
-		return i
-	}
-	d.parent[i] = d.Find(d.parent[i]) // Path compression: point directly to root
-	return d.parent[i]
-}
-
-// Union merges the sets containing i and j.
-func (d *DSU) Union(i int, j int) {
-	rootI := d.Find(i)
-	rootJ := d.Find(j)
-	if rootI != rootJ {
-		d.parent[rootI] = rootJ
-	}
-}
-
-func parseLinesIntoCoordinate3Ds(lines []string) []Coordinate3D {
-	all := make([]Coordinate3D, len(lines))
+func parseLinesIntoCoordinate3Ds(lines []string) []utils.Coordinate3D {
+	all := make([]utils.Coordinate3D, len(lines))
 	for i, line := range lines {
 		coords := strings.Split(line, ",")
-		all[i] = Coordinate3D{
+		all[i] = utils.Coordinate3D{
 			ID: i,
 			X:  utils.StringToFloat64(coords[0]),
 			Y:  utils.StringToFloat64(coords[1]),
@@ -102,7 +52,7 @@ func parseLinesIntoCoordinate3Ds(lines []string) []Coordinate3D {
 }
 
 // parseAllConnectionsMap generates all possible connections between points
-func parseIntoConnectionsMap(all []Coordinate3D) map[string]circuitConnection {
+func parseIntoConnectionsMap(all []utils.Coordinate3D) map[string]circuitConnection {
 	allConnectionsMap := make(map[string]circuitConnection)
 	// Generate all possible connections
 	for _, a := range all {
@@ -126,6 +76,8 @@ func parseIntoConnectionsMap(all []Coordinate3D) map[string]circuitConnection {
 	return allConnectionsMap
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func day8part1(input string) int {
 	all := parseLinesIntoCoordinate3Ds(utils.GetLines(input))
 
@@ -149,9 +101,9 @@ func day8part1(input string) int {
 
 	shortestConnections := allConnections[:connectionsToKeep]
 
-	dsu := NewDSU()
+	dsu := utils.NewDisjointSetUnion()
 
-	// Build relationships (Union)
+	// Build
 	for _, item := range shortestConnections {
 		dsu.Union(item.A.ID, item.B.ID)
 	}
@@ -170,41 +122,20 @@ func day8part1(input string) int {
 		groupsSlice = append(groupsSlice, group)
 	}
 
-	// Struct to hold the group and its size
-	type GroupInfo struct {
-		Connections []circuitConnection
-		Size        int
-	}
-
-	// Iterate over the map, determine circuit size, then add to slice
-	var sortedGroups []GroupInfo
+	var sizes []int
 	for _, connections := range groups {
-		sortedGroups = append(sortedGroups, GroupInfo{
-			Connections: connections,
-			Size:        countDistinct(connections),
-		})
+		sizes = append(sizes, countDistinct(connections))
 	}
 
-	// Sort by circuit sizes (Largest to Smallest)
-	sort.Slice(sortedGroups, func(i, j int) bool {
-		return sortedGroups[i].Size > sortedGroups[j].Size
+	sort.Slice(sizes, func(i, j int) bool {
+		return sizes[i] > sizes[j]
 	})
 
-	// Only keep the 3 largest
-	threeLargest := sortedGroups[:3]
-
-	result := 0
-	for _, grp := range threeLargest {
-		if result == 0 {
-			result = grp.Size // Initialize math
-		} else {
-			result *= grp.Size
-		}
-	}
-
-	return result
+	return utils.Multiply(sizes[0], sizes[1], sizes[2])
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func day8part2(input string) int {
 	all := parseLinesIntoCoordinate3Ds(utils.GetLines(input))
 
@@ -222,12 +153,12 @@ func day8part2(input string) int {
 
 	junctionBoxCount := len(all)
 
-	var connCount int // Number of connections to consider (continues to rise)
-	for connCount = 0; connCount < len(allConnections); {
-		connCount++
+	// Add connections one by one until all junction boxes are connected
+	// TODO: This is pretty inefficient (but works).. Could be optimized probably.
+	for connCount := 0; connCount < len(allConnections); connCount++ {
 		testSet := allConnections[:connCount]
 
-		dsu := NewDSU()
+		dsu := utils.NewDisjointSetUnion()
 
 		// Build relationships (Union)
 		for _, item := range testSet {
