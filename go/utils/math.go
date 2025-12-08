@@ -20,16 +20,24 @@ func PositiveMod(val int, n int) int {
 }
 
 // Multiply takes any number of arguments of type T (where T is a Number)
-// and returns the product as type T.
+// Returns the product as type T.
 func Multiply[T Number](nums ...T) T {
 	if len(nums) == 0 {
 		return 0
 	}
-
-	// Cast the untyped constant '1' to type T
 	var total T = 1
 	for _, n := range nums {
 		total *= n
+	}
+	return total
+}
+
+// Add takes any number of arguments of type T (where T is a Number)
+// Returns the sum of all Numbers as type T
+func Add[T Number](nums ...T) T {
+	var total T = 0
+	for _, n := range nums {
+		total += n
 	}
 	return total
 }

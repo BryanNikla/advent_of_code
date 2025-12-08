@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 
 	"golang.org/x/term"
@@ -24,51 +23,8 @@ func GetInput(year int, day int) (string, string) {
 	return GetFileContent(p1), GetFileContent(p2)
 }
 
-// Deprecated: Use GetInput instead
-func GetInputs(year int, day int) (string, string) {
-	return getInputContent(year, day, 1), getInputContent(year, day, 2)
-}
-
-func getInputContent(year int, day int, part int) string {
-	var path = fmt.Sprintf("%d/%02d/part%d.txt", year, day, part)
-	return GetFileContent(path)
-}
-
 func GetLines(input string) []string {
 	return strings.Split(input, "\n")
-}
-
-// StringToInteger - Simpler string to integer that handles error (really just used to clean up solution logic)
-func StringToInteger(input string) int {
-	// Handle empty strings gracefully by returning 0
-	if input == "" {
-		return 0
-	}
-	integer, err := strconv.Atoi(input)
-	if err != nil {
-		panic(err)
-	}
-	return integer
-}
-
-func StringToFloat64(input string) float64 {
-	// Handle empty strings gracefully by returning 0
-	if input == "" {
-		return 0
-	}
-	floatValue, err := strconv.ParseFloat(input, 64)
-	if err != nil {
-		panic(err)
-	}
-	return floatValue
-}
-
-func ReverseString(str string) string {
-	runes := []rune(str)
-	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
-		runes[i], runes[j] = runes[j], runes[i]
-	}
-	return string(runes)
 }
 
 type ColorCycle struct {
@@ -142,27 +98,6 @@ func ConsoleSize() (int, int) {
 	return height, width
 }
 
-// func ConsoleSize() (int, int) {
-// 	cmd := exec.Command("stty", "size")
-// 	cmd.Stdin = os.Stdin
-// 	out, err := cmd.Output()
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	s := string(out)
-// 	s = strings.TrimSpace(s)
-// 	sArr := strings.Split(s, " ")
-// 	height, err := strconv.Atoi(sArr[0])
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	width, err := strconv.Atoi(sArr[1])
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	return height, width
-// }
-
 // Forever - Loop forever until a max iteration count is reached
 func Forever(max int, fn func(f func())) error {
 	var quit bool
@@ -179,6 +114,15 @@ func Forever(max int, fn func(f func())) error {
 	return nil
 }
 
+// AllPossibleCombinations generates all possible sequences of the specified length
+// using elements from the provided slice. It effectively computes the Cartesian
+// product of the items with themselves.
+//
+// Example: length=2, items=[1, 2]
+// Returns: [[1, 1], [1, 2], [2, 1], [2, 2]]
+//
+// Note: Items can be reused, and order matters (e.g., [A, B] is distinct from [B, A]).
+// Warning: The result size grows exponentially (len(items) ^ length).
 func AllPossibleCombinations[V any](length int, items []V) [][]V {
 	// Initialize a slice to store all combinations
 	var allCombinations [][]V
@@ -206,20 +150,20 @@ func AllPossibleCombinations[V any](length int, items []V) [][]V {
 	return allCombinations
 }
 
-func GetRange(start int, end int) []int {
-	var result []int
+func GetRange[N Number](start N, end N) []N {
+	var result []N
 	for i := start; i <= end; i++ {
 		result = append(result, i)
 	}
 	return result
 }
 
-func ForRange(start int, end int, fn func(i int)) {
+func ForRange[N Number](start N, end N, fn func(i N)) {
 	for i := start; i <= end; i++ {
 		fn(i)
 	}
 }
 
-func InRange(value int, start int, end int) bool {
+func InRange[N Number](value N, start N, end N) bool {
 	return value >= start && value <= end
 }

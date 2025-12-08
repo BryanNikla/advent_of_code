@@ -30,7 +30,7 @@ func day2part1(input string) int {
 	}
 
 	for _, game := range inputToGames(input) {
-		if utils.Every(game.sets, func(set set) bool {
+		if utils.Every(game.sets, func(set set, _ int) bool {
 			return setIsLegal(set, available)
 		}) {
 			sum = sum + game.id
@@ -67,20 +67,20 @@ type set struct {
 	blue  int
 }
 
-type game struct {
+type Game struct {
 	id   int
 	sets []set
 }
 
-func inputToGames(input string) []game {
-	var games []game
+func inputToGames(input string) []Game {
+	var games []Game
 
 	lines := utils.GetLines(input)
 
 	for _, line := range lines {
 		parts := strings.Split(line, ":")
 
-		var game = game{
+		var game = Game{
 			id:   digitsOnlyToInt(parts[0]),
 			sets: []set{},
 		}

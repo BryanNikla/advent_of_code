@@ -25,9 +25,9 @@ func ForEach[T any](slice []T, callback func(T, int)) {
 
 // Every - Returns true if all elements in the slice satisfy the predicate, and false otherwise
 // Basically mimics Javascript's Array.every() method
-func Every[T any](slice []T, predicate func(T) bool) bool {
-	for _, element := range slice {
-		if !predicate(element) {
+func Every[T any](slice []T, predicate func(T, int) bool) bool {
+	for i, element := range slice {
+		if !predicate(element, i) {
 			return false
 		}
 	}
