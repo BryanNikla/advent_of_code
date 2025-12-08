@@ -102,7 +102,7 @@ func day8part1(input string) int {
 
 	shortestConnections := allConnections[:connectionsToKeep]
 
-	dsu := utils.NewDisjointSetUnion()
+	dsu := utils.NewDisjointSetUnion[int]()
 
 	// Build
 	for _, item := range shortestConnections {
@@ -159,7 +159,7 @@ func day8part2(input string) int {
 	for connCount := 0; connCount < len(allConnections); connCount++ {
 		testSet := allConnections[:connCount]
 
-		dsu := utils.NewDisjointSetUnion()
+		dsu := utils.NewDisjointSetUnion[int]()
 
 		// Build relationships (Union)
 		for _, item := range testSet {

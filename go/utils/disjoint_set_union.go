@@ -9,19 +9,20 @@ package utils
 // Interesting read: https://www.geeksforgeeks.org/dsa/introduction-to-disjoint-set-data-structure-or-union-find-algorithm/
 // Useful for problems involving connectivity, clustering, and network components
 
-type DSU struct {
+type DSU[T comparable] struct {
 	// Parent map to track the root of each element
-	parent map[int]int // key: element ID, value: parent ID
+	parent map[T]T // key: element ID, value: parent ID
 }
 
-func NewDisjointSetUnion() *DSU {
-	return &DSU{
-		parent: make(map[int]int),
+func NewDisjointSetUnion[T comparable]() *DSU[T] {
+	return &DSU[T]{
+		// 3. Use T for the map types instead of hardcoding int
+		parent: make(map[T]T),
 	}
 }
 
 // Find returns the representative (root) of the set 'i' belongs to.
-func (d *DSU) Find(i int) int {
+func (d *DSU[T]) Find(i T) T {
 	if _, exists := d.parent[i]; !exists {
 		d.parent[i] = i
 		return i
@@ -35,7 +36,7 @@ func (d *DSU) Find(i int) int {
 
 // Union merges the sets containing i and j.
 // If they are already in the same set, do nothing.
-func (d *DSU) Union(i int, j int) {
+func (d *DSU[T]) Union(i T, j T) {
 	rootI := d.Find(i)
 	rootJ := d.Find(j)
 	if rootI != rootJ {
