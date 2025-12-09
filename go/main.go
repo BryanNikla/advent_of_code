@@ -13,9 +13,9 @@ import (
 	"advent_of_code/utils"
 
 	// Import year packages to register them
-	_ "advent_of_code/year2023"
-	_ "advent_of_code/year2024"
-	_ "advent_of_code/year2025"
+	_ "advent_of_code/solutions/year2023"
+	_ "advent_of_code/solutions/year2024"
+	_ "advent_of_code/solutions/year2025"
 )
 
 var DefaultYear = time.Now().Year()
