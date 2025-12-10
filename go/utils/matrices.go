@@ -7,8 +7,9 @@ import (
 )
 
 type Coordinates struct {
-	X int
-	Y int
+	ID int // Optional ID field for identification
+	X  int
+	Y  int
 }
 
 func (c Coordinates) MoveEast(distance int) Coordinates {
@@ -91,9 +92,10 @@ func EachMatrix[V any, M ~[][]V](matrix M, fn func(V, Coordinates, M)) {
 // EachSurroundingInMatrix - Calls function fn for every coordinate surrounding a set of cords in a matrix
 func EachSurroundingInMatrix[Val any, M ~[][]Val](matrix M, cords Coordinates, fn func(Val, Coordinates, M)) {
 	directions := []Coordinates{
-		{0, -1}, {0, 1}, {-1, 0}, {1, 0}, // Cardinals
-		{-1, -1}, {1, 1}, {-1, 1}, {1, -1}, // Diagonals
+		{X: 0, Y: -1}, {X: 0, Y: 1}, {X: -1, Y: 0}, {X: 1, Y: 0}, // Cardinals
+		{X: -1, Y: -1}, {X: 1, Y: 1}, {X: -1, Y: 1}, {X: 1, Y: -1}, // Diagonals
 	}
+
 	for _, dir := range directions {
 		CallAtCords(matrix, Coordinates{
 			X: cords.X + dir.X,

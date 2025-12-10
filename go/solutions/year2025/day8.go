@@ -13,7 +13,7 @@ func init() {
 	registry.RegisterSolution(2025, 8, func() utils.Solution {
 		input1, input2 := utils.GetInput(2025, 8)
 		return utils.Solution{
-			Day:   7,
+			Day:   8,
 			Test1: day8part1(input1) == 40,
 			Test2: day8part2(input2) == 25272,
 		}
