@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"golang.org/x/term"
@@ -166,4 +167,16 @@ func ForRange[N Number](start N, end N, fn func(i N)) {
 
 func InRange[N Number](value N, start N, end N) bool {
 	return value >= start && value <= end
+}
+
+// ParseIntList - convert "1,2,3" string to []int
+func ParseIntList(s string) []int {
+	parts := strings.Split(s, ",")
+	var nums []int
+	for _, p := range parts {
+		if val, err := strconv.Atoi(strings.TrimSpace(p)); err == nil {
+			nums = append(nums, val)
+		}
+	}
+	return nums
 }
