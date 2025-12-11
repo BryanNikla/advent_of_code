@@ -58,27 +58,27 @@ func day11part2(input string) int {
 
 	var process func(device string, dac bool, fft bool) int
 	process = func(device string, dac bool, fft bool) int {
-		if device == "dac" {
+		switch device {
+		case "dac":
 			dac = true
-		}
-		if device == "fft" {
+		case "fft":
 			fft = true
-		}
-
-		if device == "out" {
+		case "out":
 			if dac && fft {
 				return 1
 			}
 			return 0
 		}
 
+		// Create the unique cache key for this combination
 		key := CacheKey{device, dac, fft}
 
-		// Already found, return the cached result
+		// Already found for this key, return the cached result
 		if val, ok := cachedResults[key]; ok {
 			return val
 		}
 
+		// Explore all connections from this device
 		totalPaths := 0
 		for _, conn := range deviceMap[device] {
 			totalPaths += process(conn, dac, fft)
@@ -91,6 +91,7 @@ func day11part2(input string) int {
 	return process("svr", false, false)
 }
 
+// Converts lines of the form "device: conn1 conn2 conn3" into a map of device to its connections
 func linesToDeviceMap(lines []string) map[string][]string {
 	deviceMap := make(map[string][]string)
 	for _, line := range lines {
