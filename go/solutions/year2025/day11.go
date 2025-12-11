@@ -1,7 +1,6 @@
 package year2025
 
 import (
-	"fmt"
 	"strings"
 
 	"advent_of_code/registry"
@@ -88,9 +87,7 @@ func day11part2(input string) int {
 		return totalPaths
 	}
 
-	answer := process("svr", false, false)
-	fmt.Printf("ANSWER: %d\n", answer)
-	return answer
+	return process("svr", false, false)
 }
 
 func linesToDeviceMap(lines []string) map[string][]string {
