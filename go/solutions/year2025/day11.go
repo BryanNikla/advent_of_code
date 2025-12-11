@@ -47,31 +47,32 @@ func day11part2(input string) int {
 	lines := utils.GetLines(input)
 	deviceMap := linesToDeviceMap(lines)
 
+	// Each unique combination of device + dac + fft is a unique consideration for the result cache
 	type CacheKey struct {
 		device string
-		hasDac bool
-		hasFft bool
+		dac    bool
+		fft    bool
 	}
 
 	cachedResults := make(map[CacheKey]int)
 
-	var process func(device string, hasDac bool, hasFft bool) int
-	process = func(device string, hasDac bool, hasFft bool) int {
+	var process func(device string, dac bool, fft bool) int
+	process = func(device string, dac bool, fft bool) int {
 		if device == "dac" {
-			hasDac = true
+			dac = true
 		}
 		if device == "fft" {
-			hasFft = true
+			fft = true
 		}
 
 		if device == "out" {
-			if hasDac && hasFft {
+			if dac && fft {
 				return 1
 			}
 			return 0
 		}
 
-		key := CacheKey{device, hasDac, hasFft}
+		key := CacheKey{device, dac, fft}
 
 		// Already found, return the cached result
 		if val, ok := cachedResults[key]; ok {
@@ -80,7 +81,7 @@ func day11part2(input string) int {
 
 		totalPaths := 0
 		for _, conn := range deviceMap[device] {
-			totalPaths += process(conn, hasDac, hasFft)
+			totalPaths += process(conn, dac, fft)
 		}
 
 		cachedResults[key] = totalPaths
