@@ -25,6 +25,11 @@ type RegionsToPopulate struct {
 	Presents map[int]int // shape index to count of how many must fit this region
 }
 
+type Present struct {
+	Matrix [][]byte
+	Area   int
+}
+
 func day12part1(input string) int {
 	inputSegments := strings.Split(input, "\n\n")
 
@@ -34,6 +39,20 @@ func day12part1(input string) int {
 	for i, segment := range inputSegments[:len(inputSegments)-1] {
 		lines := utils.GetLines(segment)
 		shapes[i] = utils.LinesToByteMatrix(lines[1:])
+	}
+
+	presents := make([]Present, 0, len(shapes))
+	for i, shape := range shapes {
+		var area int
+		utils.EachMatrix(shape, func(val byte, _ utils.Coordinates, _ [][]byte) {
+			if val == '#' {
+				area++
+			}
+		})
+		presents[i] = Present{
+			Matrix: shape,
+			Area:   area,
+		}
 	}
 
 	// last segment is regions to populate. Parse that also.
@@ -59,7 +78,22 @@ func day12part1(input string) int {
 		})
 	}
 
-	fmt.Println(regions[0])
+	/////////////////////////////////////////////////
+	// Solve
 
-	return 0
+	var regionsThatCanFitTheirPresents int
+
+	for _, region := range regions {
+		regionArea := region.X * region.Y
+		var presentAreaTotal int
+		for presentIndex, presentCount := range region.Presents {
+			presentAreaTotal += presents[presentIndex].Area * presentCount
+		}
+		if regionArea <= presentAreaTotal {
+			regionsThatCanFitTheirPresents++
+		}
+	}
+
+	fmt.Printf("regionsThatCanFitTheirPresents: %d\n", regionsThatCanFitTheirPresents)
+	return regionsThatCanFitTheirPresents
 }
