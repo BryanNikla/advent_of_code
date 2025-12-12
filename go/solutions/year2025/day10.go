@@ -10,11 +10,11 @@ import (
 
 func init() {
 	registry.RegisterSolution(2025, 10, func() utils.Solution {
-		input1, _ := utils.GetInput(2025, 10)
+		input1, input2 := utils.GetInput(2025, 10)
 		return utils.Solution{
 			Day:   10,
 			Test1: day10part1(input1) == 7,
-			Test2: false,
+			Test2: day10part2(input2) == 33,
 		}
 	})
 }
@@ -26,12 +26,25 @@ func day10part1(input string) int {
 		return append(acc, parseLineToMachineConfig(line))
 	})
 
+	return utils.Reduce(machineConfigs, func(acc int, config MachineConfig, _ int) int {
+		clicks := solve(config.Buttons, config.Lights)
+		return acc + clicks
+	})
+}
+
+func day10part2(input string) int {
+	lines := utils.GetLines(input)
+
+	machineConfigs := utils.Reduce(lines, func(acc []MachineConfig, line string, _ int) []MachineConfig {
+		return append(acc, parseLineToMachineConfig(line))
+	})
+
 	solution := utils.Reduce(machineConfigs, func(acc int, config MachineConfig, _ int) int {
 		clicks := solve(config.Buttons, config.Lights)
 		return acc + clicks
 	})
 
-	fmt.Printf("\n\nSolution: %d\n", solution)
+	fmt.Printf("SOLUTION: %d \n", solution)
 	return solution
 }
 
@@ -160,12 +173,10 @@ func solve(buttons [][]int, targetLights []LightStatus) int {
 	// Check for impossible systems (0 = 1)
 	for i := pivotRow; i < rowCount; i++ {
 		if aug[i][colCount] == 1 {
-			// No solution possible
-			return 0 // Or handle error appropriately
+			return 0 // No solution possible
 		}
 	}
 
-	// --- Minimization Step ---
 	// Identify free variables
 	var freeCols []int
 	for col := 0; col < colCount; col++ {
@@ -177,14 +188,12 @@ func solve(buttons [][]int, targetLights []LightStatus) int {
 	minClicks := int(^uint(0) >> 1) // Max Int
 
 	// Iterate 2^k combinations for k free variables
-	// Since N is usually small in AoC, this is fast.
 	countFree := len(freeCols)
 	combinations := 1 << countFree
 
 	for i := 0; i < combinations; i++ {
 		candidateSol := make([]int, colCount)
 
-		// 1. Assign values to free variables based on bits of 'i'
 		currentClicks := 0
 		for bit := 0; bit < countFree; bit++ {
 			if (i & (1 << bit)) != 0 {
@@ -193,9 +202,6 @@ func solve(buttons [][]int, targetLights []LightStatus) int {
 			}
 		}
 
-		// 2. Back-substitute to find Pivot Variables
-		// Because matrix is in RREF (Diagonal-ish), for a pivot row `r` with pivot at `c`:
-		// x_c = target_r ^ (sum of free vars in this row)
 		for r := 0; r < pivotRow; r++ {
 			c := pivots[r]
 			val := aug[r][colCount] // start with b vector
