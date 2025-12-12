@@ -106,7 +106,6 @@ func day12part1(input string) int {
 
 		// The hard part would be rotating and checking...
 		// but real problem input didn't actually need it...
-
 		// TODO: Make solution actually work for test data..
 	}
 
