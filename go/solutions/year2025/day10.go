@@ -34,18 +34,16 @@ func day10part1(input string) int {
 
 func day10part2(input string) int {
 	lines := utils.GetLines(input)
+	machineConfigs := []MachineConfig{}
+	for _, l := range lines {
+		machineConfigs = append(machineConfigs, parseLineToMachineConfig(l))
+	}
 
-	machineConfigs := utils.Reduce(lines, func(acc []MachineConfig, line string, _ int) []MachineConfig {
-		return append(acc, parseLineToMachineConfig(line))
-	})
-
-	solution := utils.Reduce(machineConfigs, func(acc int, config MachineConfig, _ int) int {
-		clicks := solve(config.Buttons, config.Lights)
+	return utils.Reduce(machineConfigs, func(acc int, config MachineConfig, _ int) int {
+		combos := getCombinations(config.Buttons, len(config.JoltageReq))
+		clicks, _ := solveRecursive(config.JoltageReq, combos)
 		return acc + clicks
 	})
-
-	fmt.Printf("SOLUTION: %d \n", solution)
-	return solution
 }
 
 type LightStatus byte
@@ -55,10 +53,19 @@ const (
 	LightOn  = '#'
 )
 
+// MachineConfig holds the configuration of lights, buttons, and target states
 type MachineConfig struct {
 	Lights     []LightStatus
 	Buttons    [][]int
 	JoltageReq []int // ignore for part 1
+}
+
+// Combination represents a combination of button presses and their effects on lights
+// counts: number of times each light is toggled
+// total: total number of button presses in this combination
+type Combination struct {
+	counts []int
+	total  int
 }
 
 // parseLineToMachineConfig parses a line like this:
@@ -111,7 +118,7 @@ func buttonsToWiringMatrix(buttons [][]int, numLights int) [][]int {
 func solve(buttons [][]int, targetLights []LightStatus) int {
 	totalLights := len(targetLights)
 
-	// Build Target Vector
+	// Build JoltageReq Vector
 	target := make([]int, totalLights)
 	for i, status := range targetLights {
 		if status == LightOn {
@@ -224,4 +231,75 @@ func solve(buttons [][]int, targetLights []LightStatus) int {
 	}
 
 	return minClicks
+}
+
+// getCombinations - generates all possible button combinations and their effects
+// buttons - list of buttons with affected lights
+// numLights - total number of lights
+func getCombinations(buttons [][]int, numLights int) []Combination {
+	n := len(buttons)
+	combos := make([]Combination, 0, 1<<n)
+
+	// Iterate through all possible button press combinations (2^n)
+	for i := 0; i < (1 << n); i++ {
+		c := Combination{counts: make([]int, numLights), total: 0}
+		for j := 0; j < n; j++ {
+			if (i & (1 << j)) != 0 {
+				c.total++
+				for _, lightIdx := range buttons[j] {
+					c.counts[lightIdx]++
+				}
+			}
+		}
+		combos = append(combos, c)
+	}
+
+	return combos
+}
+
+// solveRecursive - recursively finds the minimal button presses to achieve the target state
+// using precomputed combinations
+// Returns (minClicks, [if a solution was found])
+func solveRecursive(target []int, combos []Combination) (int, bool) {
+	isZero := true
+	for _, v := range target {
+		if v != 0 {
+			isZero = false
+			break
+		}
+	}
+	if isZero {
+		return 0, true
+	}
+
+	minClicks := 1000000
+	found := false
+
+	for _, cb := range combos {
+		match := true
+		for i := 0; i < len(target); i++ {
+			if cb.counts[i] > target[i] || cb.counts[i]%2 != target[i]%2 {
+				match = false
+				break
+			}
+		}
+
+		if match {
+			nextTarget := make([]int, len(target))
+			for i := 0; i < len(target); i++ {
+				nextTarget[i] = (target[i] - cb.counts[i]) / 2
+			}
+
+			res, ok := solveRecursive(nextTarget, combos)
+			if ok {
+				currentTotal := cb.total + 2*res
+				if currentTotal < minClicks {
+					minClicks = currentTotal
+					found = true
+				}
+			}
+		}
+	}
+
+	return minClicks, found
 }
