@@ -40,8 +40,9 @@ func day10part2(input string) int {
 	}
 
 	return utils.Reduce(machineConfigs, func(acc int, config MachineConfig, _ int) int {
+		memo := make(map[string]int)
 		combos := getCombinations(config.Buttons, len(config.JoltageReq))
-		clicks, _ := solveRecursive(config.JoltageReq, combos)
+		clicks, _ := solveRecursive(config.JoltageReq, combos, memo)
 		return acc + clicks
 	})
 }
@@ -260,7 +261,12 @@ func getCombinations(buttons [][]int, numLights int) []Combination {
 // solveRecursive - recursively finds the minimal button presses to achieve the target state
 // using precomputed combinations
 // Returns (minClicks, [if a solution was found])
-func solveRecursive(target []int, combos []Combination) (int, bool) {
+func solveRecursive(target []int, combos []Combination, memo map[string]int) (int, bool) {
+	key := generateMemoKey(target)
+	if val, ok := memo[key]; ok {
+		return val, val < 1000000
+	}
+
 	isZero := true
 	for _, v := range target {
 		if v != 0 {
@@ -290,7 +296,7 @@ func solveRecursive(target []int, combos []Combination) (int, bool) {
 				nextTarget[i] = (target[i] - cb.counts[i]) / 2
 			}
 
-			res, ok := solveRecursive(nextTarget, combos)
+			res, ok := solveRecursive(nextTarget, combos, memo)
 			if ok {
 				currentTotal := cb.total + 2*res
 				if currentTotal < minClicks {
@@ -301,5 +307,14 @@ func solveRecursive(target []int, combos []Combination) (int, bool) {
 		}
 	}
 
+	memo[key] = minClicks
 	return minClicks, found
+}
+
+func generateMemoKey(target []int) string {
+	b := make([]byte, len(target))
+	for i, v := range target {
+		b[i] = byte(v)
+	}
+	return string(b)
 }
